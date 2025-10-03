@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODAPAY | Referral & Premium</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a4f8c;
+            --secondary: #00a859;
+            --accent: #ff6b00;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --premium: #ffd700;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background-color: #f5f7f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(26, 79, 140, 0.05);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        
+        .nav-item i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+        
+        .user-details h4 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .user-details p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 16px 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .page-title p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .notification-icon {
+            position: relative;
+            font-size: 20px;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Content Area */
+        .content-area {
+            padding: 24px;
+            flex: 1;
+        }
+        
+        /* Service Tabs */
+        .service-tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .service-tab {
+            flex: 1;
+            padding: 12px 16px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .service-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Referral Section */
+        .referral-container {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 992px) {
+            .referral-container {
+                flex-direction: column;
+            }
+        }
+        
+        .referral-card {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+        
+        .referral-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .referral-code-container {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 12px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .referral-code {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin: 16px 0;
+            font-family: monospace;
+        }
+        
+        .share-options {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .share-btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .share-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .referral-rewards {
+            margin-top: 30px;
+        }
+        
+        .reward-tier {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .reward-tier.unlocked {
+            border-color: var(--secondary);
+            background: rgba(0, 168, 89, 0.05);
+        }
+        
+        .reward-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            color: var(--primary);
+            font-size: 20px;
+        }
+        
+        .reward-tier.unlocked .reward-icon {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .reward-details {
+            flex: 1;
+        }
+        
+        .reward-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .reward-description {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .reward-status {
+            font-weight: 500;
+        }
+        
+        .reward-status.unlocked {
+            color: var(--secondary);
+        }
+        
+        /* Referral History */
+        .referral-history {
+            flex: 0 0 350px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .section-action {
+            color: var(--primary);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .referral-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .referral-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .referral-item:last-child {
+            border-bottom: none;
+        }
+        
+        .referral-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            background: var(--light);
+            color: var(--primary);
+        }
+        
+        .referral-details {
+            flex: 1;
+        }
+        
+        .referral-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .referral-date {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .referral-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-completed {
+            background: rgba(0, 168, 89, 0.1);
+            color: var(--secondary);
+        }
+        
+        /* Premium Features */
+        .premium-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 24px;
+        }
+        
+        .premium-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .premium-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #8b6e00;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .premium-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .premium-subtitle {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .premium-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .feature-card {
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(26, 79, 140, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            color: var(--primary);
+            font-size: 20px;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .feature-description {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        /* Pricing Plans */
+        .pricing-plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+        
+        .pricing-card {
+            border: 1px solid var(--light-gray);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .pricing-card.popular {
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(26, 79, 140, 0.1);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .plan-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .plan-price {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .plan-period {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+            text-align: left;
+        }
+        
+        .plan-feature {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .plan-feature i {
+            color: var(--secondary);
+            margin-right: 10px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #153d6f;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .btn-outline:hover {
+            background: var(--light-gray);
+        }
+        
+        .btn-premium {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #8b6e00;
+            font-weight: 700;
+        }
+        
+        .btn-premium:hover {
+            background: linear-gradient(135deg, #e6c200 0%, #f5e15e 100%);
+        }
+        
+        /* In-App Purchases */
+        .iap-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+        
+        .iap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .iap-card {
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .iap-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .iap-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: rgba(26, 79, 140, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .iap-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .iap-description {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .iap-price {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .iap-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--light);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+        
+        /* Success Screen */
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .success-checkmark {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 40px;
+        }
+        
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+        }
+        
+        .success-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .success-message {
+            color: var(--gray);
+            margin-bottom: 30px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .transaction-details {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            color: var(--gray);
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .success-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .success-actions .btn {
+            margin-top: 0;
+            width: auto;
+            flex: 1;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .sidebar-nav {
+                display: flex;
+                overflow-x: auto;
+                padding: 0;
+            }
+            
+            .nav-item {
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+            }
+            
+            .nav-item:hover, .nav-item.active {
+                border-left: none;
+                border-bottom-color: var(--primary);
+            }
+            
+            .referral-history {
+                flex: 1;
+                max-height: none;
+            }
+            
+            .referral-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .content-area {
+                padding: 16px;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .top-bar-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .share-options {
+                flex-direction: column;
+            }
+            
+            .pricing-plans, .premium-features, .iap-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .success-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-credit-card"></i>
+                    TODAPAY
+                </div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    My Cards
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    Transfers
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-wallet"></i>
+                    Top-Up
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    Airtime & Bills
+                </a>
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-gift"></i>
+                    Refer & Earn
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    Transactions
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-file-invoice"></i>
+                    Statements
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-bell"></i>
+                    Notifications
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">NM</div>
+                    <div class="user-details">
+                        <h4>Nkosinathi Mathela</h4>
+                        <p>Premium Member</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="page-title">
+                    <h1>Refer & Earn</h1>
+                    <p>Invite friends and unlock premium features</p>
+                </div>
+                
+                <div class="top-bar-actions">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="user-avatar">NM</div>
+                </div>
+            </div>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Service Tabs -->
+                <div class="service-tabs">
+                    <div class="service-tab active" data-tab="referral">Referral Program</div>
+                    <div class="service-tab" data-tab="premium">Premium Features</div>
+                    <div class="service-tab" data-tab="iap">In-App Purchases</div>
+                </div>
+                
+                <!-- Referral Program -->
+                <div id="referral-section">
+                    <div class="referral-container">
+                        <div class="referral-card">
+                            <div class="referral-stats">
+                                <div class="stat-card">
+                                    <div class="stat-value">8</div>
+                                    <div class="stat-label">Friends Referred</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">R 400</div>
+                                    <div class="stat-label">Total Earnings</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">3</div>
+                                    <div class="stat-label">Pending Rewards</div>
+                                </div>
+                            </div>
+                            
+                            <div class="referral-code-container">
+                                <h3>Your Referral Code</h3>
+                                <div class="referral-code">TODA-NKOSI-7842</div>
+                                <p>Share this code with friends and earn R50 when they sign up and activate their card</p>
+                                
+                                <div class="share-options">
+                                    <button class="share-btn" data-method="whatsapp">
+                                        <i class="fab fa-whatsapp"></i> WhatsApp
+                                    </button>
+                                    <button class="share-btn" data-method="sms">
+                                        <i class="fas fa-sms"></i> SMS
+                                    </button>
+                                    <button class="share-btn" data-method="email">
+                                        <i class="fas fa-envelope"></i> Email
+                                    </button>
+                                    <button class="share-btn" data-method="copy">
+                                        <i class="fas fa-copy"></i> Copy Link
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="referral-rewards">
+                                <h3 class="section-title">Referral Rewards</h3>
+                                
+                                <div class="reward-tier unlocked">
+                                    <div class="reward-icon">
+                                        <i class="fas fa-gift"></i>
+                                    </div>
+                                    <div class="reward-details">
+                                        <div class="reward-title">1 Friend Referred</div>
+                                        <div class="reward-description">Earn R50 when your friend signs up and activates their card</div>
+                                    </div>
+                                    <div class="reward-status unlocked">Unlocked</div>
+                                </div>
+                                
+                                <div class="reward-tier unlocked">
+                                    <div class="reward-icon">
+                                        <i class="fas fa-gem"></i>
+                                    </div>
+                                    <div class="reward-details">
+                                        <div class="reward-title">5 Friends Referred</div>
+                                        <div class="reward-description">Get 3 months of TODAPAY Premium for free</div>
+                                    </div>
+                                    <div class="reward-status unlocked">Unlocked</div>
+                                </div>
+                                
+                                <div class="reward-tier">
+                                    <div class="reward-icon">
+                                        <i class="fas fa-crown"></i>
+                                    </div>
+                                    <div class="reward-details">
+                                        <div class="reward-title">10 Friends Referred</div>
+                                        <div class="reward-description">Receive R200 bonus and lifetime premium features</div>
+                                    </div>
+                                    <div class="reward-status">3 more to go</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="referral-history">
+                            <div class="section-header">
+                                <h3 class="section-title">Referral History</h3>
+                                <a href="#" class="section-action">View All</a>
+                            </div>
+                            
+                            <ul class="referral-list">
+                                <li class="referral-item">
+                                    <div class="referral-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="referral-details">
+                                        <div class="referral-name">Sarah Johnson</div>
+                                        <div class="referral-date">25 Aug 2023</div>
+                                    </div>
+                                    <div class="referral-status status-completed">R50 Earned</div>
+                                </li>
+                                <li class="referral-item">
+                                    <div class="referral-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="referral-details">
+                                        <div class="referral-name">Michael Bhengu</div>
+                                        <div class="referral-date">24 Aug 2023</div>
+                                    </div>
+                                    <div class="referral-status status-completed">R50 Earned</div>
+                                </li>
+                                <li class="referral-item">
+                                    <div class="referral-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="referral-details">
+                                        <div class="referral-name">David Williams</div>
+                                        <div class="referral-date">23 Aug 2023</div>
+                                    </div>
+                                    <div class="referral-status status-pending">Pending</div>
+                                </li>
+                                <li class="referral-item">
+                                    <div class="referral-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="referral-details">
+                                        <div class="referral-name">Lisa van der Merwe</div>
+                                        <div class="referral-date">22 Aug 2023</div>
+                                    </div>
+                                    <div class="referral-status status-completed">R50 Earned</div>
+                                </li>
+                                <li class="referral-item">
+                                    <div class="referral-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="referral-details">
+                                        <div class="referral-name">Thabo Mbeki</div>
+                                        <div class="referral-date">20 Aug 2023</div>
+                                    </div>
+                                    <div class="referral-status status-completed">R50 Earned</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Premium Features -->
+                <div id="premium-section" style="display: none;">
+                    <div class="premium-container">
+                        <div class="premium-header">
+                            <div class="premium-badge">PREMIUM</div>
+                            <h2 class="premium-title">Unlock Premium Features</h2>
+                            <p class="premium-subtitle">Upgrade to TODAPAY Premium for enhanced security, higher limits, and exclusive benefits</p>
+                        </div>
+                        
+                        <div class="premium-features">
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h3 class="feature-title">Enhanced Security</h3>
+                                <p class="feature-description">Advanced fraud protection, biometric authentication, and priority support</p>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <h3 class="feature-title">Higher Limits</h3>
+                                <p class="feature-description">Increased daily transaction limits and larger transfer amounts</p>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-plane"></i>
+                                </div>
+                                <h3 class="feature-title">Travel Benefits</h3>
+                                <p class="feature-description">Free travel insurance, airport lounge access, and no foreign transaction fees</p>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <h3 class="feature-title">Cashback Rewards</h3>
+                                <p class="feature-description">Earn up to 5% cashback on purchases at selected merchants</p>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                </div>
+                                <h3 class="feature-title">Advanced Analytics</h3>
+                                <p class="feature-description">Detailed spending insights, budgeting tools, and financial reports</p>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-headset"></i>
+                                </div>
+                                <h3 class="feature-title">Priority Support</h3>
+                                <p class="feature-description">24/7 dedicated customer support with faster response times</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-plans">
+                            <div class="pricing-card">
+                                <h3 class="plan-name">Basic</h3>
+                                <div class="plan-price">R 0</div>
+                                <div class="plan-period">Free Forever</div>
+                                <ul class="plan-features">
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Standard Security</li>
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Basic Transaction Limits</li>
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Email Support</li>
+                                    <li class="plan-feature"><i class="fas fa-times" style="color: var(--gray);"></i> Cashback Rewards</li>
+                                    <li class="plan-feature"><i class="fas fa-times" style="color: var(--gray);"></i> Travel Insurance</li>
+                                    <li class="plan-feature"><i class="fas fa-times" style="color: var(--gray);"></i> Priority Support</li>
+                                </ul>
+                                <button class="btn btn-outline">Current Plan</button>
+                            </div>
+                            
+                            <div class="pricing-card popular">
+                                <div class="popular-badge">MOST POPULAR</div>
+                                <h3 class="plan-name">Premium</h3>
+                                <div class="plan-price">R 49</div>
+                                <div class="plan-period">per month</div>
+                                <ul class="plan-features">
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Enhanced Security</li>
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Higher Transaction Limits</li>
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Priority Support</li>
+                                    <li class="plan-feature"><i class="fas fa-check"></i> 3% Cashback Rewards</li>
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Travel Insurance</li>
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Advanced Analytics</li>
+                                </ul>
+                                <button class="btn btn-premium">Upgrade to Premium</button>
+                            </div>
+                            
+                            <div class="pricing-card">
+                                <h3 class="plan-name">Family</h3>
+                                <div class="plan-price">R 99</div>
+                                <div class="plan-period">per month</div>
+                                <ul class="plan-features">
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Everything in Premium</li>
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Up to 5 Family Members</li>
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Family Spending Controls</li>
+                                    <li class="plan-feature"><i class="fas fa-check"></i> 5% Cashback Rewards</li>
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Extended Travel Insurance</li>
+                                    <li class="plan-feature"><i class="fas fa-check"></i> Dedicated Account Manager</li>
+                                </ul>
+                                <button class="btn btn-primary">Choose Family Plan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- In-App Purchases -->
+                <div id="iap-section" style="display: none;">
+                    <div class="iap-container">
+                        <div class="premium-header">
+                            <h2 class="premium-title">In-App Purchases</h2>
+                            <p class="premium-subtitle">Enhance your TODAPAY experience with these exclusive purchases</p>
+                        </div>
+                        
+                        <div class="iap-grid">
+                            <div class="iap-card">
+                                <div class="iap-icon">
+                                    <i class="fas fa-palette"></i>
+                                </div>
+                                <h3 class="iap-title">Custom Card Designs</h3>
+                                <p class="iap-description">Personalize your card with exclusive designs and colors</p>
+                                <div class="iap-price">R 29.99</div>
+                                <div class="iap-badge">One-time purchase</div>
+                                <button class="btn btn-outline">Purchase</button>
+                            </div>
+                            
+                            <div class="iap-card">
+                                <div class="iap-icon">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <h3 class="iap-title">Instant Transfer Boost</h3>
+                                <p class="iap-description">Make your transfers instant for 30 days</p>
+                                <div class="iap-price">R 19.99</div>
+                                <div class="iap-badge">30-day benefit</div>
+                                <button class="btn btn-outline">Purchase</button>
+                            </div>
+                            
+                            <div class="iap-card">
+                                <div class="iap-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <h3 class="iap-title">Cashback Booster</h3>
+                                <p class="iap-description">Double your cashback rewards for 1 month</p>
+                                <div class="iap-price">R 39.99</div>
+                                <div class="iap-badge">30-day benefit</div>
+                                <button class="btn btn-outline">Purchase</button>
+                            </div>
+                            
+                            <div class="iap-card">
+                                <div class="iap-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h3 class="iap-title">Advanced Security Pack</h3>
+                                <p class="iap-description">Extra security features and identity protection</p>
+                                <div class="iap-price">R 49.99</div>
+                                <div class="iap-badge">One-time purchase</div>
+                                <button class="btn btn-outline">Purchase</button>
+                            </div>
+                            
+                            <div class="iap-card">
+                                <div class="iap-icon">
+                                    <i class="fas fa-chart-pie"></i>
+                                </div>
+                                <h3 class="iap-title">Financial Insights Pro</h3>
+                                <p class="iap-description">Advanced analytics and budgeting tools</p>
+                                <div class="iap-price">R 24.99</div>
+                                <div class="iap-badge">Monthly subscription</div>
+                                <button class="btn btn-outline">Subscribe</button>
+                            </div>
+                            
+                            <div class="iap-card">
+                                <div class="iap-icon">
+                                    <i class="fas fa-gift"></i>
+                                </div>
+                                <h3 class="iap-title">Virtual Gift Cards</h3>
+                                <p class="iap-description">Send digital gift cards to friends and family</p>
+                                <div class="iap-price">From R 50</div>
+                                <div class="iap-badge">Various amounts</div>
+                                <button class="btn btn-outline">Browse</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Success Screen -->
+                <div class="success-screen" id="success-screen">
+                    <div class="success-checkmark">
+                        <div class="checkmark">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    
+                    <h2 class="success-title" id="success-title">Purchase Successful!</h2>
+                    <p class="success-message" id="success-message">Your purchase has been completed successfully.</p>
+                    
+                    <div class="transaction-details">
+                        <div class="detail-row">
+                            <div class="detail-label">Transaction ID</div>
+                            <div class="detail-value">TXN-7842-9516</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Item</div>
+                            <div class="detail-value" id="success-item">-</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Amount</div>
+                            <div class="detail-value" id="success-amount">R 0.00</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Date & Time</div>
+                            <div class="detail-value" id="success-date">-</div>
+                        </div>
+                    </div>
+                    
+                    <div class="success-actions">
+                        <button class="btn btn-outline" id="new-purchase">Continue Browsing</button>
+                        <button class="btn btn-primary" id="view-receipt">View Receipt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const serviceTabs = document.querySelectorAll('.service-tab');
+            const referralSection = document.getElementById('referral-section');
+            const premiumSection = document.getElementById('premium-section');
+            const iapSection = document.getElementById('iap-section');
+            const successScreen = document.getElementById('success-screen');
+            
+            // Share buttons
+            const shareButtons = document.querySelectorAll('.share-btn');
+            
+            // Purchase buttons
+            const purchaseButtons = document.querySelectorAll('.btn-outline, .btn-premium, .btn-primary');
+            
+            // Success screen elements
+            const successTitle = document.getElementById('success-title');
+            const successMessage = document.getElementById('success-message');
+            const successItem = document.getElementById('success-item');
+            const successAmount = document.getElementById('success-amount');
+            const successDate = document.getElementById('success-date');
+            
+            const newPurchaseBtn = document.getElementById('new-purchase');
+            const viewReceiptBtn = document.getElementById('view-receipt');
+            
+            // Tab Switching
+            serviceTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    serviceTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Show corresponding section
+                    const tabType = this.getAttribute('data-tab');
+                    
+                    referralSection.style.display = 'none';
+                    premiumSection.style.display = 'none';
+                    iapSection.style.display = 'none';
+                    successScreen.style.display = 'none';
+                    
+                    if (tabType === 'referral') {
+                        referralSection.style.display = 'block';
+                    } else if (tabType === 'premium') {
+                        premiumSection.style.display = 'block';
+                    } else if (tabType === 'iap') {
+                        iapSection.style.display = 'block';
+                    }
+                });
+            });
+            
+            // Share Button Functionality
+            shareButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const method = this.getAttribute('data-method');
+                    const referralCode = 'TODA-NKOSI-7842';
+                    const message = `Join me on TODAPAY! Use my referral code ${referralCode} to sign up and get R50 bonus when you activate your card. Download the app here: https://todapay.co.za`;
+                    
+                    if (method === 'copy') {
+                        // Copy to clipboard
+                        navigator.clipboard.writeText(message).then(() => {
+                            alert('Referral link copied to clipboard!');
+                        });
+                    } else if (method === 'whatsapp') {
+                        // Open WhatsApp
+                        window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+                    } else if (method === 'sms') {
+                        // Open SMS
+                        window.open(`sms:?body=${encodeURIComponent(message)}`, '_blank');
+                    } else if (method === 'email') {
+                        // Open Email
+                        window.open(`mailto:?subject=Join me on TODAPAY&body=${encodeURIComponent(message)}`, '_blank');
+                    }
+                });
+            });
+            
+            // Purchase Button Functionality
+            purchaseButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Don't trigger for current plan button
+                    if (this.textContent === 'Current Plan') return;
+                    
+                    let itemName = '';
+                    let itemPrice = '';
+                    
+                    // Determine what's being purchased
+                    if (this.closest('.pricing-card')) {
+                        const planName = this.closest('.pricing-card').querySelector('.plan-name').textContent;
+                        const planPrice = this.closest('.pricing-card').querySelector('.plan-price').textContent;
+                        itemName = `${planName} Plan`;
+                        itemPrice = planPrice;
+                    } else if (this.closest('.iap-card')) {
+                        const iapTitle = this.closest('.iap-card').querySelector('.iap-title').textContent;
+                        const iapPrice = this.closest('.iap-card').querySelector('.iap-price').textContent;
+                        itemName = iapTitle;
+                        itemPrice = iapPrice;
+                    }
+                    
+                    // Show success screen
+                    showSuccessScreen(itemName, itemPrice);
+                });
+            });
+            
+            // Success Screen Navigation
+            newPurchaseBtn.addEventListener('click', function() {
+                successScreen.style.display = 'none';
+                iapSection.style.display = 'block';
+                
+                // Set active tab to IAP
+                serviceTabs.forEach(tab => tab.classList.remove('active'));
+                document.querySelector('.service-tab[data-tab="iap"]').classList.add('active');
+            });
+            
+            viewReceiptBtn.addEventListener('click', function() {
+                alert('Receipt would be generated and downloaded in a real application');
+                // In a real app, this would generate a PDF receipt
+            });
+            
+            // Show Success Screen
+            function showSuccessScreen(item, price) {
+                referralSection.style.display = 'none';
+                premiumSection.style.display = 'none';
+                iapSection.style.display = 'none';
+                successScreen.style.display = 'block';
+                
+                // Set current date
+                const now = new Date();
+                const formattedDate = now.toLocaleDateString('en-ZA', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }) + ' • ' + now.toLocaleTimeString('en-ZA', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                successTitle.textContent = 'Purchase Complete!';
+                successMessage.textContent = 'Thank you for your purchase. Your account will be updated shortly.';
+                successItem.textContent = item;
+                successAmount.textContent = price;
+                successDate.textContent = formattedDate;
+            }
+        });
+    </script>
+</body>
+</html>

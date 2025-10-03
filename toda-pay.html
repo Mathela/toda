@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODAPAY Card Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a4f8c;
+            --secondary: #00a859;
+            --accent: #ff6b00;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7f9;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-success {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+        
+        .card-highlight {
+            border-left: 4px solid var(--accent);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .todapay-card {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 16px;
+            color: white;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-chip {
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(45deg, #d4af37, #ffdb6d);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-logo {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .dashboard-stats {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .main-nav {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 1rem;
+        }
+        
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .quick-action {
+            transition: all 0.3s ease;
+        }
+        
+        .quick-action:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-credit-card me-2"></i>TODAPAY
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Cards</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Transactions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Transfers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Bill Pay</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown me-3">
+                        <a href="#" class="dropdown-toggle text-dark text-decoration-none" id="notificationsDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger rounded-pill">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">New deposit received</a></li>
+                            <li><a class="dropdown-item" href="#">Card statement ready</a></li>
+                            <li><a class="dropdown-item" href="#">Transfer completed</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle text-dark text-decoration-none" id="userDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> Nkosinathi M.
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="main-nav mb-4">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-credit-card me-2"></i> My Cards
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-exchange-alt me-2"></i> Transfers
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-history me-2"></i> Transactions
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-bolt me-2"></i> Bill Payments
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-truck me-2"></i> Courier Services
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-gift me-2"></i> Refer Friends
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-cog me-2"></i> Settings
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <h6>Need Help?</h6>
+                        <p class="text-muted small">Our support team is available 24/7</p>
+                        <button class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-headset me-1"></i> Contact Support
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="col-lg-9">
+                <!-- Welcome & Balance -->
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h2>Welcome back, Nkosinathi!</h2>
+                        <p class="text-muted">Here's your financial summary</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i> Add Money
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Card Display -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="todapay-card">
+                            <div class="card-logo">TODAPAY</div>
+                            <div class="card-chip"></div>
+                            <h4 class="mb-4">R 4,582.75</h4>
+                            <div class="row">
+                                <div class="col-8">
+                                    <p class="mb-1">**** **** **** 4512</p>
+                                    <small>Nkosinathi Mathela</small>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <small>Valid Thru</small>
+                                    <p class="mb-0">08/25</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4 class="mb-3">Quick Actions</h4>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="card quick-action text-center p-3">
+                            <div class="nav-icon">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <h6>Transfer</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="card quick-action text-center p-3">
+                            <div class="nav-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h6>Airtime</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="card quick-action text-center p-3">
+                            <div class="nav-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h6>Electricity</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="card quick-action text-center p-3">
+                            <div class="nav-icon">
+                                <i class="fas fa-file-invoice"></i>
+                            </div>
+                            <h6>Statements</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats & Transactions -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="dashboard-stats">
+                            <h5 class="mb-3">Account Overview</h5>
+                            <div class="d-flex justify-content-between mb-3">
+                                <div>
+                                    <small class="text-muted">Available Balance</small>
+                                    <h4>R 4,582.75</h4>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted">Monthly Budget</small>
+                                    <h4>R 8,000.00</h4>
+                                </div>
+                            </div>
+                            <div class="progress mb-3" style="height: 10px;">
+                                <div class="progress-bar" role="progressbar" style="width: 57%"></div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <small class="text-muted">Income</small>
+                                    <h6>R 12,500</h6>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">Spent</small>
+                                    <h6>R 7,917</h6>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">Goals</small>
+                                    <h6>R 2,000</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="dashboard-stats">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Recent Transactions</h5>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                            </div>
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item d-flex justify-content-between px-0">
+                                    <div>
+                                        <h6 class="mb-0">Checkers</h6>
+                                        <small class="text-muted">Grocery shopping</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h6 class="mb-0 text-danger">-R 342.50</h6>
+                                        <small class="text-muted">Yesterday</small>
+                                    </div>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between px-0">
+                                    <div>
+                                        <h6 class="mb-0">Salary Deposit</h6>
+                                        <small class="text-muted">Standard Bank</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h6 class="mb-0 text-success">+R 12,500.00</h6>
+                                        <small class="text-muted">25 Aug 2023</small>
+                                    </div>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between px-0">
+                                    <div>
+                                        <h6 class="mb-0">Netflix</h6>
+                                        <small class="text-muted">Subscription</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h6 class="mb-0 text-danger">-R 159.00</h6>
+                                        <small class="text-muted">24 Aug 2023</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Additional Features -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="dashboard-stats">
+                            <h5 class="mb-3">Additional Services</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card card-highlight h-100">
+                                        <div class="card-body">
+                                            <h5><i class="fas fa-shipping-fast me-2"></i> Courier Guy</h5>
+                                            <p class="card-text">Schedule pickups and track packages directly from your dashboard.</p>
+                                            <a href="#" class="btn btn-sm btn-outline-primary">Learn More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card card-highlight h-100">
+                                        <div class="card-body">
+                                            <h5><i class="fas fa-file-invoice-dollar me-2"></i> Xero Integration</h5>
+                                            <p class="card-text">Seamlessly sync your transactions with Xero accounting software.</p>
+                                            <a href="#" class="btn btn-sm btn-outline-primary">Connect</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card card-highlight h-100">
+                                        <div class="card-body">
+                                            <h5><i class="fas fa-user-friends me-2"></i> Referral Program</h5>
+                                            <p class="card-text">Earn rewards when you refer friends to TODAPAY.</p>
+                                            <a href="#" class="btn btn-sm btn-outline-primary">Invite Friends</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>TODAPAY</h5>
+                    <p>A convenient payment solution powered by Standard Bank</p>
+                    <div class="d-flex">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h5>Products</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Pay Card</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Travel Card</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Business Card</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h5>Company</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">About Us</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Careers</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Partners</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h5>Support</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Help Center</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Contact Us</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Security</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h5>Download App</h5>
+                    <div class="d-flex flex-column">
+                        <button class="btn btn-outline-light mb-2">
+                            <i class="fab fa-apple me-2"></i> App Store
+                        </button>
+                        <button class="btn btn-outline-light">
+                            <i class="fab fa-google-play me-2"></i> Play Store
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">© 2023 TODAPAY. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-white text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-white text-decoration-none me-3">Terms of Service</a>
+                    <a href="#" class="text-white text-decoration-none">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

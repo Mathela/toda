@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODAPAY | Airtime & Bill Payments</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a4f8c;
+            --secondary: #00a859;
+            --accent: #ff6b00;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background-color: #f5f7f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(26, 79, 140, 0.05);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        
+        .nav-item i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+        
+        .user-details h4 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .user-details p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 16px 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .page-title p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .notification-icon {
+            position: relative;
+            font-size: 20px;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Content Area */
+        .content-area {
+            padding: 24px;
+            flex: 1;
+        }
+        
+        /* Service Tabs */
+        .service-tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .service-tab {
+            flex: 1;
+            padding: 12px 16px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .service-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Service Container */
+        .service-container {
+            display: flex;
+            gap: 24px;
+        }
+        
+        @media (max-width: 992px) {
+            .service-container {
+                flex-direction: column;
+            }
+        }
+        
+        /* Service Form */
+        .service-form-container {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+        
+        .form-header {
+            margin-bottom: 24px;
+        }
+        
+        .form-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .form-subtitle {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-control {
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 79, 140, 0.1);
+        }
+        
+        .amount-input {
+            position: relative;
+        }
+        
+        .currency-symbol {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: var(--gray);
+        }
+        
+        .amount-input .form-control {
+            padding-left: 40px;
+        }
+        
+        .amount-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .amount-option {
+            padding: 8px 16px;
+            background: var(--light);
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .amount-option:hover {
+            background: var(--light-gray);
+        }
+        
+        .amount-option.selected {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Provider Selection */
+        .provider-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .provider-option {
+            flex: 1;
+            min-width: 120px;
+            padding: 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .provider-option:hover {
+            border-color: var(--primary);
+        }
+        
+        .provider-option.selected {
+            border-color: var(--primary);
+            background: rgba(26, 79, 140, 0.05);
+        }
+        
+        .provider-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .vodacom { background: #e60000; }
+        .mtn { background: #ffcc00; color: #000; }
+        .cellc { background: #000; }
+        .telkom { background: #ff0000; }
+        
+        .provider-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .provider-desc {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        /* Biller Selection */
+        .biller-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .biller-option {
+            padding: 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .biller-option:hover {
+            border-color: var(--primary);
+        }
+        
+        .biller-option.selected {
+            border-color: var(--primary);
+            background: rgba(26, 79, 140, 0.05);
+        }
+        
+        .biller-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .biller-name {
+            font-weight: 500;
+        }
+        
+        /* Saved Beneficiaries */
+        .saved-beneficiaries {
+            margin-top: 20px;
+        }
+        
+        .beneficiary-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .beneficiary-card {
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .beneficiary-card:hover {
+            border-color: var(--primary);
+        }
+        
+        .beneficiary-card.selected {
+            border-color: var(--primary);
+            background: rgba(26, 79, 140, 0.05);
+        }
+        
+        .beneficiary-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .beneficiary-details {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+        
+        .beneficiary-account {
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .payment-summary {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-label {
+            color: var(--gray);
+        }
+        
+        .summary-value {
+            font-weight: 500;
+        }
+        
+        .summary-total {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #153d6f;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .btn-outline:hover {
+            background: var(--light-gray);
+        }
+        
+        /* Recent Payments */
+        .recent-payments {
+            flex: 0 0 350px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .section-action {
+            color: var(--primary);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .payment-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .payment-item:last-child {
+            border-bottom: none;
+        }
+        
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            background: var(--light);
+            color: var(--primary);
+        }
+        
+        .payment-details {
+            flex: 1;
+        }
+        
+        .payment-recipient {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .payment-date {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .payment-amount {
+            font-weight: 600;
+            color: var(--danger);
+        }
+        
+        /* Success Screen */
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .success-checkmark {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 40px;
+        }
+        
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+        }
+        
+        .success-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .success-message {
+            color: var(--gray);
+            margin-bottom: 30px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .transaction-details {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            color: var(--gray);
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .success-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .success-actions .btn {
+            margin-top: 0;
+            width: auto;
+            flex: 1;
+        }
+        
+        /* Utility Meter */
+        .utility-meter {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .meter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .meter-title {
+            font-weight: 600;
+        }
+        
+        .meter-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .meter-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .meter-progress {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .meter-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .sidebar-nav {
+                display: flex;
+                overflow-x: auto;
+                padding: 0;
+            }
+            
+            .nav-item {
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+            }
+            
+            .nav-item:hover, .nav-item.active {
+                border-left: none;
+                border-bottom-color: var(--primary);
+            }
+            
+            .recent-payments {
+                flex: 1;
+                max-height: none;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .content-area {
+                padding: 16px;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .top-bar-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .provider-selector {
+                flex-direction: column;
+            }
+            
+            .biller-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .beneficiary-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .success-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-credit-card"></i>
+                    TODAPAY
+                </div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    My Cards
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    Transfers
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-wallet"></i>
+                    Top-Up
+                </a>
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-mobile-alt"></i>
+                    Airtime & Bills
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    Transactions
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-file-invoice"></i>
+                    Statements
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-bell"></i>
+                    Notifications
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">NM</div>
+                    <div class="user-details">
+                        <h4>Nkosinathi Mathela</h4>
+                        <p>Premium Member</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="page-title">
+                    <h1>Airtime & Bill Payments</h1>
+                    <p>Buy airtime and pay your bills instantly</p>
+                </div>
+                
+                <div class="top-bar-actions">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="user-avatar">NM</div>
+                </div>
+            </div>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Service Tabs -->
+                <div class="service-tabs">
+                    <div class="service-tab active" data-tab="airtime">Buy Airtime</div>
+                    <div class="service-tab" data-tab="electricity">Electricity</div>
+                    <div class="service-tab" data-tab="bills">Other Bills</div>
+                </div>
+                
+                <div class="service-container">
+                    <!-- Service Form -->
+                    <div class="service-form-container">
+                        <!-- Airtime Form -->
+                        <div id="airtime-form">
+                            <div class="form-header">
+                                <h2 class="form-title">Buy Airtime</h2>
+                                <p class="form-subtitle">Instant airtime for any South African network</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Select Network</label>
+                                
+                                <div class="provider-selector">
+                                    <div class="provider-option selected" data-provider="vodacom">
+                                        <div class="provider-logo vodacom">V</div>
+                                        <div class="provider-name">Vodacom</div>
+                                        <div class="provider-desc">Prepaid & Top-Up</div>
+                                    </div>
+                                    <div class="provider-option" data-provider="mtn">
+                                        <div class="provider-logo mtn">M</div>
+                                        <div class="provider-name">MTN</div>
+                                        <div class="provider-desc">Prepaid & Top-Up</div>
+                                    </div>
+                                    <div class="provider-option" data-provider="cellc">
+                                        <div class="provider-logo cellc">C</div>
+                                        <div class="provider-name">Cell C</div>
+                                        <div class="provider-desc">Prepaid & Top-Up</div>
+                                    </div>
+                                    <div class="provider-option" data-provider="telkom">
+                                        <div class="provider-logo telkom">T</div>
+                                        <div class="provider-name">Telkom</div>
+                                        <div class="provider-desc">Prepaid & Top-Up</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="phone-number">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone-number" placeholder="Enter 10-digit phone number">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="airtime-amount">Airtime Amount</label>
+                                <div class="amount-input">
+                                    <span class="currency-symbol">R</span>
+                                    <input type="number" class="form-control" id="airtime-amount" placeholder="0.00" min="5" step="1">
+                                </div>
+                                <div class="amount-options">
+                                    <div class="amount-option" data-amount="10">R 10</div>
+                                    <div class="amount-option" data-amount="20">R 20</div>
+                                    <div class="amount-option" data-amount="50">R 50</div>
+                                    <div class="amount-option" data-amount="100">R 100</div>
+                                    <div class="amount-option" data-amount="200">R 200</div>
+                                </div>
+                            </div>
+                            
+                            <div class="saved-beneficiaries">
+                                <label class="form-label">Saved Numbers</label>
+                                <div class="beneficiary-list">
+                                    <div class="beneficiary-card selected">
+                                        <div class="beneficiary-name">My Number</div>
+                                        <div class="beneficiary-details">Vodacom • Prepaid</div>
+                                        <div class="beneficiary-account">072 123 4567</div>
+                                    </div>
+                                    <div class="beneficiary-card">
+                                        <div class="beneficiary-name">Sarah Johnson</div>
+                                        <div class="beneficiary-details">MTN • Prepaid</div>
+                                        <div class="beneficiary-account">083 987 6543</div>
+                                    </div>
+                                    <div class="beneficiary-card">
+                                        <div class="beneficiary-name">Mom</div>
+                                        <div class="beneficiary-details">Cell C • Prepaid</div>
+                                        <div class="beneficiary-account">084 555 1234</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-summary">
+                                <div class="summary-row">
+                                    <div class="summary-label">Airtime Amount</div>
+                                    <div class="summary-value" id="airtime-summary-amount">R 0.00</div>
+                                </div>
+                                <div class="summary-row">
+                                    <div class="summary-label">Fee</div>
+                                    <div class="summary-value">R 0.00</div>
+                                </div>
+                                <div class="summary-row">
+                                    <div class="summary-label">Total</div>
+                                    <div class="summary-value summary-total" id="airtime-total">R 0.00</div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary" id="buy-airtime">Buy Airtime</button>
+                        </div>
+                        
+                        <!-- Electricity Form -->
+                        <div id="electricity-form" style="display: none;">
+                            <div class="form-header">
+                                <h2 class="form-title">Electricity Payment</h2>
+                                <p class="form-subtitle">Top up your prepaid meter or pay your electricity bill</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Select Provider</label>
+                                
+                                <div class="provider-selector">
+                                    <div class="provider-option selected" data-provider="eskom">
+                                        <div class="provider-logo" style="background: #000;">E</div>
+                                        <div class="provider-name">Eskom</div>
+                                        <div class="provider-desc">Direct & Prepaid</div>
+                                    </div>
+                                    <div class="provider-option" data-provider="johannesburg">
+                                        <div class="provider-logo" style="background: #0047ab;">J</div>
+                                        <div class="provider-name">City Power</div>
+                                        <div class="provider-desc">Johannesburg</div>
+                                    </div>
+                                    <div class="provider-option" data-provider="capetown">
+                                        <div class="provider-logo" style="background: #0077c8;">C</div>
+                                        <div class="provider-name">City of Cape Town</div>
+                                        <div class="provider-desc">Cape Town</div>
+                                    </div>
+                                    <div class="provider-option" data-provider="ethekwini">
+                                        <div class="provider-logo" style="background: #00a859;">D</div>
+                                        <div class="provider-name">eThekwini</div>
+                                        <div class="provider-desc">Durban</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="meter-number">Meter Number</label>
+                                <input type="text" class="form-control" id="meter-number" placeholder="Enter meter number">
+                            </div>
+                            
+                            <div class="utility-meter">
+                                <div class="meter-header">
+                                    <div class="meter-title">Current Balance</div>
+                                    <div class="meter-amount" id="meter-balance">R 42.50</div>
+                                </div>
+                                <div class="meter-bar">
+                                    <div class="meter-progress" style="width: 17%"></div>
+                                </div>
+                                <div class="meter-labels">
+                                    <span>Empty</span>
+                                    <span>R 250</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="electricity-amount">Top-Up Amount</label>
+                                <div class="amount-input">
+                                    <span class="currency-symbol">R</span>
+                                    <input type="number" class="form-control" id="electricity-amount" placeholder="0.00" min="10" step="1">
+                                </div>
+                                <div class="amount-options">
+                                    <div class="amount-option" data-amount="50">R 50</div>
+                                    <div class="amount-option" data-amount="100">R 100</div>
+                                    <div class="amount-option" data-amount="200">R 200</div>
+                                    <div class="amount-option" data-amount="500">R 500</div>
+                                </div>
+                            </div>
+                            
+                            <div class="saved-beneficiaries">
+                                <label class="form-label">Saved Meters</label>
+                                <div class="beneficiary-list">
+                                    <div class="beneficiary-card selected">
+                                        <div class="beneficiary-name">Home Meter</div>
+                                        <div class="beneficiary-details">Eskom • Prepaid</div>
+                                        <div class="beneficiary-account">1234 5678 9012</div>
+                                    </div>
+                                    <div class="beneficiary-card">
+                                        <div class="beneficiary-name">Cottage Meter</div>
+                                        <div class="beneficiary-details">Eskom • Prepaid</div>
+                                        <div class="beneficiary-account">9876 5432 1098</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-summary">
+                                <div class="summary-row">
+                                    <div class="summary-label">Electricity Amount</div>
+                                    <div class="summary-value" id="electricity-summary-amount">R 0.00</div>
+                                </div>
+                                <div class="summary-row">
+                                    <div class="summary-label">Fee</div>
+                                    <div class="summary-value">R 1.50</div>
+                                </div>
+                                <div class="summary-row">
+                                    <div class="summary-label">Total</div>
+                                    <div class="summary-value summary-total" id="electricity-total">R 1.50</div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary" id="buy-electricity">Buy Electricity</button>
+                        </div>
+                        
+                        <!-- Other Bills Form -->
+                        <div id="bills-form" style="display: none;">
+                            <div class="form-header">
+                                <h2 class="form-title">Pay Other Bills</h2>
+                                <p class="form-subtitle">Pay your TV license, water, and other utility bills</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Select Bill Type</label>
+                                
+                                <div class="biller-selector">
+                                    <div class="biller-option selected" data-biller="tv-license">
+                                        <div class="biller-icon">
+                                            <i class="fas fa-tv"></i>
+                                        </div>
+                                        <div class="biller-name">TV License</div>
+                                    </div>
+                                    <div class="biller-option" data-biller="water">
+                                        <div class="biller-icon">
+                                            <i class="fas fa-tint"></i>
+                                        </div>
+                                        <div class="biller-name">Water Bill</div>
+                                    </div>
+                                    <div class="biller-option" data-biller="rates">
+                                        <div class="biller-icon">
+                                            <i class="fas fa-home"></i>
+                                        </div>
+                                        <div class="biller-name">Rates & Taxes</div>
+                                    </div>
+                                    <div class="biller-option" data-biller="dstv">
+                                        <div class="biller-icon">
+                                            <i class="fas fa-satellite-dish"></i>
+                                        </div>
+                                        <div class="biller-name">DSTV</div>
+                                    </div>
+                                    <div class="biller-option" data-biller="traffic-fines">
+                                        <div class="biller-icon">
+                                            <i class="fas fa-car"></i>
+                                        </div>
+                                        <div class="biller-name">Traffic Fines</div>
+                                    </div>
+                                    <div class="biller-option" data-biller="municipal">
+                                        <div class="biller-icon">
+                                            <i class="fas fa-city"></i>
+                                        </div>
+                                        <div class="biller-name">Municipal</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="account-number">Account Number</label>
+                                <input type="text" class="form-control" id="account-number" placeholder="Enter account number">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="bills-amount">Amount to Pay</label>
+                                <div class="amount-input">
+                                    <span class="currency-symbol">R</span>
+                                    <input type="number" class="form-control" id="bills-amount" placeholder="0.00" min="1" step="0.01">
+                                </div>
+                            </div>
+                            
+                            <div class="utility-meter" id="tv-license-meter" style="display: block;">
+                                <div class="meter-header">
+                                    <div class="meter-title">TV License Balance</div>
+                                    <div class="meter-amount">R 265.00</div>
+                                </div>
+                                <div class="meter-bar">
+                                    <div class="meter-progress" style="width: 100%"></div>
+                                </div>
+                                <div class="meter-labels">
+                                    <span>Due Now</span>
+                                    <span>Annual: R 265</span>
+                                </div>
+                            </div>
+                            
+                            <div class="saved-beneficiaries">
+                                <label class="form-label">Saved Accounts</label>
+                                <div class="beneficiary-list">
+                                    <div class="beneficiary-card selected">
+                                        <div class="beneficiary-name">TV License</div>
+                                        <div class="beneficiary-details">Annual • Household</div>
+                                        <div class="beneficiary-account">LIC-7842-9516</div>
+                                    </div>
+                                    <div class="beneficiary-card">
+                                        <div class="beneficiary-name">Water Account</div>
+                                        <div class="beneficiary-details">Monthly • City of Johannesburg</div>
+                                        <div class="beneficiary-account">H2O-4519-3267</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-summary">
+                                <div class="summary-row">
+                                    <div class="summary-label">Payment Amount</div>
+                                    <div class="summary-value" id="bills-summary-amount">R 0.00</div>
+                                </div>
+                                <div class="summary-row">
+                                    <div class="summary-label">Fee</div>
+                                    <div class="summary-value">R 3.00</div>
+                                </div>
+                                <div class="summary-row">
+                                    <div class="summary-label">Total</div>
+                                    <div class="summary-value summary-total" id="bills-total">R 3.00</div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary" id="pay-bill">Pay Bill</button>
+                        </div>
+                        
+                        <!-- Success Screen -->
+                        <div class="success-screen" id="success-screen">
+                            <div class="success-checkmark">
+                                <div class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            
+                            <h2 class="success-title" id="success-title">Payment Successful!</h2>
+                            <p class="success-message" id="success-message">Your payment has been processed successfully.</p>
+                            
+                            <div class="transaction-details">
+                                <div class="detail-row">
+                                    <div class="detail-label">Transaction ID</div>
+                                    <div class="detail-value">TXN-7842-9516</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Amount</div>
+                                    <div class="detail-value" id="success-amount">R 0.00</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Recipient</div>
+                                    <div class="detail-value" id="success-recipient">-</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Date & Time</div>
+                                    <div class="detail-value" id="success-date">-</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Reference</div>
+                                    <div class="detail-value" id="success-reference">-</div>
+                                </div>
+                            </div>
+                            
+                            <div class="success-actions">
+                                <button class="btn btn-outline" id="new-payment">New Payment</button>
+                                <button class="btn btn-primary" id="view-receipt">View Receipt</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Payments -->
+                    <div class="recent-payments">
+                        <div class="section-header">
+                            <h3 class="section-title">Recent Payments</h3>
+                            <a href="#" class="section-action">View All</a>
+                        </div>
+                        
+                        <ul class="payment-list">
+                            <li class="payment-item">
+                                <div class="payment-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="payment-details">
+                                    <div class="payment-recipient">Vodacom Airtime</div>
+                                    <div class="payment-date">25 Aug 2023 • 14:23</div>
+                                </div>
+                                <div class="payment-amount">-R 100.00</div>
+                            </li>
+                            <li class="payment-item">
+                                <div class="payment-icon">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div class="payment-details">
+                                    <div class="payment-recipient">Eskom Electricity</div>
+                                    <div class="payment-date">24 Aug 2023 • 10:15</div>
+                                </div>
+                                <div class="payment-amount">-R 200.00</div>
+                            </li>
+                            <li class="payment-item">
+                                <div class="payment-icon">
+                                    <i class="fas fa-tv"></i>
+                                </div>
+                                <div class="payment-details">
+                                    <div class="payment-recipient">TV License</div>
+                                    <div class="payment-date">23 Aug 2023 • 16:42</div>
+                                </div>
+                                <div class="payment-amount">-R 265.00</div>
+                            </li>
+                            <li class="payment-item">
+                                <div class="payment-icon">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <div class="payment-details">
+                                    <div class="payment-recipient">Water Bill</div>
+                                    <div class="payment-date">22 Aug 2023 • 09:30</div>
+                                </div>
+                                <div class="payment-amount">-R 350.00</div>
+                            </li>
+                            <li class="payment-item">
+                                <div class="payment-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="payment-details">
+                                    <div class="payment-recipient">MTN Airtime</div>
+                                    <div class="payment-date">20 Aug 2023 • 11:05</div>
+                                </div>
+                                <div class="payment-amount">-R 50.00</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const serviceTabs = document.querySelectorAll('.service-tab');
+            const airtimeForm = document.getElementById('airtime-form');
+            const electricityForm = document.getElementById('electricity-form');
+            const billsForm = document.getElementById('bills-form');
+            const successScreen = document.getElementById('success-screen');
+            
+            // Amount inputs
+            const airtimeAmount = document.getElementById('airtime-amount');
+            const electricityAmount = document.getElementById('electricity-amount');
+            const billsAmount = document.getElementById('bills-amount');
+            
+            // Amount options
+            const amountOptions = document.querySelectorAll('.amount-option');
+            
+            // Provider options
+            const providerOptions = document.querySelectorAll('.provider-option');
+            const billerOptions = document.querySelectorAll('.biller-option');
+            
+            // Beneficiary cards
+            const beneficiaryCards = document.querySelectorAll('.beneficiary-card');
+            
+            // Summary elements
+            const airtimeSummaryAmount = document.getElementById('airtime-summary-amount');
+            const airtimeTotal = document.getElementById('airtime-total');
+            const electricitySummaryAmount = document.getElementById('electricity-summary-amount');
+            const electricityTotal = document.getElementById('electricity-total');
+            const billsSummaryAmount = document.getElementById('bills-summary-amount');
+            const billsTotal = document.getElementById('bills-total');
+            
+            // Buttons
+            const buyAirtimeBtn = document.getElementById('buy-airtime');
+            const buyElectricityBtn = document.getElementById('buy-electricity');
+            const payBillBtn = document.getElementById('pay-bill');
+            
+            // Success screen elements
+            const successTitle = document.getElementById('success-title');
+            const successMessage = document.getElementById('success-message');
+            const successAmount = document.getElementById('success-amount');
+            const successRecipient = document.getElementById('success-recipient');
+            const successDate = document.getElementById('success-date');
+            const successReference = document.getElementById('success-reference');
+            
+            const newPaymentBtn = document.getElementById('new-payment');
+            const viewReceiptBtn = document.getElementById('view-receipt');
+            
+            // Tab Switching
+            serviceTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    serviceTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Show corresponding form
+                    const tabType = this.getAttribute('data-tab');
+                    
+                    airtimeForm.style.display = 'none';
+                    electricityForm.style.display = 'none';
+                    billsForm.style.display = 'none';
+                    successScreen.style.display = 'none';
+                    
+                    if (tabType === 'airtime') {
+                        airtimeForm.style.display = 'block';
+                    } else if (tabType === 'electricity') {
+                        electricityForm.style.display = 'block';
+                        updateElectricitySummary(); // Update summary with fee
+                    } else if (tabType === 'bills') {
+                        billsForm.style.display = 'block';
+                        updateBillsSummary(); // Update summary with fee
+                    }
+                });
+            });
+            
+            // Amount Options
+            amountOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options in the same container
+                    const parent = this.closest('.amount-options');
+                    if (parent) {
+                        parent.querySelectorAll('.amount-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                    }
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    // Set the amount in the corresponding input
+                    const amount = this.getAttribute('data-amount');
+                    const input = this.closest('.service-form-container').querySelector('input[type="number"]');
+                    if (input) {
+                        input.value = amount;
+                        
+                        // Update summary
+                        if (input.id === 'airtime-amount') {
+                            updateAirtimeSummary();
+                        } else if (input.id === 'electricity-amount') {
+                            updateElectricitySummary();
+                        } else if (input.id === 'bills-amount') {
+                            updateBillsSummary();
+                        }
+                    }
+                });
+            });
+            
+            // Amount Input Change
+            airtimeAmount.addEventListener('input', updateAirtimeSummary);
+            electricityAmount.addEventListener('input', updateElectricitySummary);
+            billsAmount.addEventListener('input', updateBillsSummary);
+            
+            // Provider Selection
+            providerOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options in the same container
+                    const parent = this.closest('.provider-selector');
+                    parent.querySelectorAll('.provider-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Biller Selection
+            billerOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    billerOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    // Show/hide relevant meter based on selection
+                    const biller = this.getAttribute('data-biller');
+                    const tvLicenseMeter = document.getElementById('tv-license-meter');
+                    
+                    if (biller === 'tv-license') {
+                        tvLicenseMeter.style.display = 'block';
+                    } else {
+                        tvLicenseMeter.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Beneficiary Selection
+            beneficiaryCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards in the same container
+                    const parent = this.closest('.beneficiary-list');
+                    parent.querySelectorAll('.beneficiary-card').forEach(c => {
+                        c.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                    
+                    // Auto-fill form fields based on selection
+                    const beneficiaryName = this.querySelector('.beneficiary-name').textContent;
+                    const beneficiaryAccount = this.querySelector('.beneficiary-account').textContent;
+                    
+                    // Check which form is active and fill accordingly
+                    if (airtimeForm.style.display !== 'none') {
+                        document.getElementById('phone-number').value = beneficiaryAccount;
+                    } else if (electricityForm.style.display !== 'none') {
+                        document.getElementById('meter-number').value = beneficiaryAccount;
+                    } else if (billsForm.style.display !== 'none') {
+                        document.getElementById('account-number').value = beneficiaryAccount;
+                    }
+                });
+            });
+            
+            // Update Airtime Summary
+            function updateAirtimeSummary() {
+                const amount = parseFloat(airtimeAmount.value) || 0;
+                airtimeSummaryAmount.textContent = `R ${amount.toFixed(2)}`;
+                airtimeTotal.textContent = `R ${amount.toFixed(2)}`;
+            }
+            
+            // Update Electricity Summary
+            function updateElectricitySummary() {
+                const amount = parseFloat(electricityAmount.value) || 0;
+                const fee = 1.50;
+                const total = amount + fee;
+                
+                electricitySummaryAmount.textContent = `R ${amount.toFixed(2)}`;
+                electricityTotal.textContent = `R ${total.toFixed(2)}`;
+            }
+            
+            // Update Bills Summary
+            function updateBillsSummary() {
+                const amount = parseFloat(billsAmount.value) || 0;
+                const fee = 3.00;
+                const total = amount + fee;
+                
+                billsSummaryAmount.textContent = `R ${amount.toFixed(2)}`;
+                billsTotal.textContent = `R ${total.toFixed(2)}`;
+            }
+            
+            // Form Submission
+            buyAirtimeBtn.addEventListener('click', function() {
+                const amount = parseFloat(airtimeAmount.value) || 0;
+                const phoneNumber = document.getElementById('phone-number').value;
+                
+                if (amount <= 0) {
+                    alert('Please enter a valid amount');
+                    return;
+                }
+                
+                if (!phoneNumber || phoneNumber.length !== 10) {
+                    alert('Please enter a valid 10-digit phone number');
+                    return;
+                }
+                
+                // Get selected provider
+                const selectedProvider = document.querySelector('.provider-option.selected');
+                const providerName = selectedProvider.querySelector('.provider-name').textContent;
+                
+                // Show success screen
+                showSuccessScreen('airtime', amount, `${providerName} Airtime`, phoneNumber);
+            });
+            
+            buyElectricityBtn.addEventListener('click', function() {
+                const amount = parseFloat(electricityAmount.value) || 0;
+                const meterNumber = document.getElementById('meter-number').value;
+                
+                if (amount <= 0) {
+                    alert('Please enter a valid amount');
+                    return;
+                }
+                
+                if (!meterNumber) {
+                    alert('Please enter a meter number');
+                    return;
+                }
+                
+                // Get selected provider
+                const selectedProvider = document.querySelector('.provider-option.selected');
+                const providerName = selectedProvider.querySelector('.provider-name').textContent;
+                
+                // Show success screen
+                showSuccessScreen('electricity', amount, `${providerName} Electricity`, meterNumber);
+            });
+            
+            payBillBtn.addEventListener('click', function() {
+                const amount = parseFloat(billsAmount.value) || 0;
+                const accountNumber = document.getElementById('account-number').value;
+                
+                if (amount <= 0) {
+                    alert('Please enter a valid amount');
+                    return;
+                }
+                
+                if (!accountNumber) {
+                    alert('Please enter an account number');
+                    return;
+                }
+                
+                // Get selected biller
+                const selectedBiller = document.querySelector('.biller-option.selected');
+                const billerName = selectedBiller.querySelector('.biller-name').textContent;
+                
+                // Show success screen
+                showSuccessScreen('bill', amount, billerName, accountNumber);
+            });
+            
+            // Success Screen Navigation
+            newPaymentBtn.addEventListener('click', function() {
+                successScreen.style.display = 'none';
+                airtimeForm.style.display = 'block';
+                
+                // Reset forms
+                document.querySelectorAll('input').forEach(input => {
+                    input.value = '';
+                });
+                
+                document.querySelectorAll('.amount-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                // Reset to default tab
+                serviceTabs.forEach(tab => tab.classList.remove('active'));
+                document.querySelector('.service-tab[data-tab="airtime"]').classList.add('active');
+                
+                // Reset summaries
+                updateAirtimeSummary();
+            });
+            
+            viewReceiptBtn.addEventListener('click', function() {
+                alert('Receipt would be generated and downloaded in a real application');
+                // In a real app, this would generate a PDF receipt
+            });
+            
+            // Show Success Screen
+            function showSuccessScreen(type, amount, recipient, reference) {
+                airtimeForm.style.display = 'none';
+                electricityForm.style.display = 'none';
+                billsForm.style.display = 'none';
+                successScreen.style.display = 'block';
+                
+                // Set current date
+                const now = new Date();
+                const formattedDate = now.toLocaleDateString('en-ZA', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }) + ' • ' + now.toLocaleTimeString('en-ZA', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                if (type === 'airtime') {
+                    successTitle.textContent = 'Airtime Purchased!';
+                    successMessage.textContent = 'Your airtime has been credited successfully. The recipient should receive it instantly.';
+                } else if (type === 'electricity') {
+                    successTitle.textContent = 'Electricity Purchased!';
+                    successMessage.textContent = 'Your electricity tokens have been generated successfully.';
+                } else if (type === 'bill') {
+                    successTitle.textContent = 'Bill Paid!';
+                    successMessage.textContent = 'Your payment has been processed successfully.';
+                }
+                
+                successAmount.textContent = `R ${amount.toFixed(2)}`;
+                successRecipient.textContent = recipient;
+                successDate.textContent = formattedDate;
+                successReference.textContent = reference;
+            }
+            
+            // Initialize summaries
+            updateAirtimeSummary();
+            updateElectricitySummary();
+            updateBillsSummary();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODAPAY | Card Top-Up</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a4f8c;
+            --secondary: #00a859;
+            --accent: #ff6b00;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background-color: #f5f7f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(26, 79, 140, 0.05);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        
+        .nav-item i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+        
+        .user-details h4 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .user-details p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 16px 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .page-title p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .notification-icon {
+            position: relative;
+            font-size: 20px;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Content Area */
+        .content-area {
+            padding: 24px;
+            flex: 1;
+        }
+        
+        /* Card Display */
+        .card-display {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 16px;
+            color: white;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+        
+        .card-type {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .card-logo {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .card-balance {
+            margin-bottom: 30px;
+        }
+        
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 700;
+        }
+        
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .card-number {
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+        
+        .card-expiry {
+            text-align: right;
+        }
+        
+        .card-expiry-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .card-expiry-date {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        /* Top-Up Methods */
+        .topup-methods {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .method-card {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-align: center;
+        }
+        
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .method-card.selected {
+            border-color: var(--primary);
+            background: rgba(26, 79, 140, 0.03);
+        }
+        
+        .method-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+        
+        .method-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .method-description {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 16px;
+        }
+        
+        .method-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--light);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--gray);
+        }
+        
+        /* Funding Form */
+        .funding-form-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 24px;
+        }
+        
+        .form-header {
+            margin-bottom: 24px;
+        }
+        
+        .form-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .form-subtitle {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-control {
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 79, 140, 0.1);
+        }
+        
+        .amount-input {
+            position: relative;
+        }
+        
+        .currency-symbol {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: var(--gray);
+        }
+        
+        .amount-input .form-control {
+            padding-left: 40px;
+        }
+        
+        .amount-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .amount-option {
+            padding: 8px 16px;
+            background: var(--light);
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .amount-option:hover {
+            background: var(--light-gray);
+        }
+        
+        .amount-option.selected {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--light-gray);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+        }
+        
+        .upload-area.active {
+            border-color: var(--primary);
+            background: rgba(26, 79, 140, 0.05);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+        
+        .upload-text {
+            margin-bottom: 16px;
+        }
+        
+        .upload-hint {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .btn-browse {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .preview-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+        }
+        
+        .preview-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #153d6f;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .btn-outline:hover {
+            background: var(--light-gray);
+        }
+        
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .info-box {
+            background: rgba(26, 79, 140, 0.05);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .info-box-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .info-icon {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .info-title {
+            font-weight: 600;
+        }
+        
+        .info-content {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .bank-details {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .bank-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .bank-detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .bank-detail-label {
+            font-weight: 500;
+        }
+        
+        .bank-detail-value {
+            font-family: monospace;
+            font-size: 16px;
+        }
+        
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .success-checkmark {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+        }
+        
+        .success-message {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .success-message h2 {
+            margin-bottom: 16px;
+        }
+        
+        .success-message p {
+            color: var(--gray);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .timeline-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            color: var(--gray);
+        }
+        
+        .timeline-step.active .timeline-icon {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .timeline-step.completed .timeline-icon {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .timeline-content h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .timeline-content p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .sidebar-nav {
+                display: flex;
+                overflow-x: auto;
+                padding: 0;
+            }
+            
+            .nav-item {
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+            }
+            
+            .nav-item:hover, .nav-item.active {
+                border-left: none;
+                border-bottom-color: var(--primary);
+            }
+            
+            .topup-methods {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .content-area {
+                padding: 16px;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .top-bar-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-credit-card"></i>
+                    TODAPAY
+                </div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    My Cards
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    Transfers
+                </a>
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-wallet"></i>
+                    Top-Up
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    Transactions
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-file-invoice"></i>
+                    Statements
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-bell"></i>
+                    Notifications
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">NM</div>
+                    <div class="user-details">
+                        <h4>Nkosinathi Mathela</h4>
+                        <p>Premium Member</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="page-title">
+                    <h1>Card Top-Up</h1>
+                    <p>Add funds to your TODAPAY card</p>
+                </div>
+                
+                <div class="top-bar-actions">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="user-avatar">NM</div>
+                </div>
+            </div>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Card Display -->
+                <div class="card-display">
+                    <div class="card-header">
+                        <div class="card-type">TODAPAY Mastercard</div>
+                        <div class="card-logo">TODAPAY</div>
+                    </div>
+                    
+                    <div class="card-balance">
+                        <div class="balance-label">Available Balance</div>
+                        <div class="balance-amount">R 4,582.75</div>
+                    </div>
+                    
+                    <div class="card-details">
+                        <div class="card-number">•••• •••• •••• 4512</div>
+                        <div class="card-expiry">
+                            <div class="card-expiry-label">Expires</div>
+                            <div class="card-expiry-date">08/25</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Top-Up Methods -->
+                <div class="topup-methods">
+                    <div class="method-card selected" data-method="cash">
+                        <div class="method-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="method-title">Cash Deposit</div>
+                        <div class="method-description">Deposit cash at partner locations with proof of payment</div>
+                        <div class="method-badge">Instant • No Fee</div>
+                    </div>
+                    
+                    <div class="method-card" data-method="eft">
+                        <div class="method-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="method-title">Bank Transfer (EFT)</div>
+                        <div class="method-description">Transfer from your bank account to TODAPAY</div>
+                        <div class="method-badge">1-2 Days • No Fee</div>
+                    </div>
+                    
+                    <div class="method-card" data-method="payfast">
+                        <div class="method-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="method-title">Payfast</div>
+                        <div class="method-description">Secure online payment with card or wallet</div>
+                        <div class="method-badge">Instant • 2.9% Fee</div>
+                    </div>
+                </div>
+                
+                <!-- Cash Deposit Form -->
+                <div class="funding-form-container" id="cash-form">
+                    <div class="form-header">
+                        <h2 class="form-title">Cash Deposit</h2>
+                        <p class="form-subtitle">Deposit cash at any of our partner locations and upload proof of payment</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="amount">Amount to Deposit</label>
+                        <div class="amount-input">
+                            <span class="currency-symbol">R</span>
+                            <input type="number" class="form-control" id="amount" placeholder="0.00" min="10" step="0.01">
+                        </div>
+                        <div class="amount-options">
+                            <div class="amount-option" data-amount="100">R 100</div>
+                            <div class="amount-option" data-amount="200">R 200</div>
+                            <div class="amount-option" data-amount="500">R 500</div>
+                            <div class="amount-option" data-amount="1000">R 1,000</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-box">
+                        <div class="info-box-header">
+                            <i class="fas fa-info-circle info-icon"></i>
+                            <div class="info-title">How to make a cash deposit</div>
+                        </div>
+                        <div class="info-content">
+                            <ol>
+                                <li>Visit any Standard Bank branch, PEP stores, or Checkers supermarket</li>
+                                <li>Provide your TODAPAY reference number at the till</li>
+                                <li>Make your cash deposit and keep the receipt</li>
+                                <li>Upload the proof of payment below</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Your Deposit Reference</label>
+                        <div class="bank-details">
+                            <div class="bank-detail-row">
+                                <div class="bank-detail-label">Reference Number</div>
+                                <div class="bank-detail-value">TODA-7842-9516</div>
+                                <button class="copy-btn" data-clipboard-text="TODA-7842-9516">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Upload Proof of Payment</label>
+                        <div class="upload-area" id="pop-upload-area">
+                            <div class="upload-icon">
+                                <i class="fas fa-receipt"></i>
+                            </div>
+                            <div class="upload-text">
+                                <h4>Upload Deposit Receipt</h4>
+                                <p>Take a clear photo of your deposit receipt</p>
+                            </div>
+                            <div class="upload-hint">Supported formats: JPG, PNG, PDF (Max 5MB)</div>
+                            <div class="btn-browse">Browse Files</div>
+                            <input type="file" id="pop-document" accept=".jpg,.jpeg,.png,.pdf" style="display: none;">
+                        </div>
+                        
+                        <div class="preview-container" id="pop-preview">
+                            <img src="" alt="Receipt Preview" class="preview-image">
+                            <div class="preview-actions">
+                                <button class="btn btn-outline" id="retake-pop">Retake</button>
+                                <button class="btn btn-primary" id="confirm-pop">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <div>
+                            <small class="text-muted">Funds will be available immediately after verification</small>
+                        </div>
+                        <button class="btn btn-primary" id="submit-cash">Submit Deposit</button>
+                    </div>
+                </div>
+                
+                <!-- EFT Form -->
+                <div class="funding-form-container" id="eft-form" style="display: none;">
+                    <div class="form-header">
+                        <h2 class="form-title">Bank Transfer (EFT)</h2>
+                        <p class="form-subtitle">Transfer funds from your bank account using the details below</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="eft-amount">Amount to Transfer</label>
+                        <div class="amount-input">
+                            <span class="currency-symbol">R</span>
+                            <input type="number" class="form-control" id="eft-amount" placeholder="0.00" min="10" step="0.01">
+                        </div>
+                        <div class="amount-options">
+                            <div class="amount-option" data-amount="100">R 100</div>
+                            <div class="amount-option" data-amount="200">R 200</div>
+                            <div class="amount-option" data-amount="500">R 500</div>
+                            <div class="amount-option" data-amount="1000">R 1,000</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-box">
+                        <div class="info-box-header">
+                            <i class="fas fa-info-circle info-icon"></i>
+                            <div class="info-title">Bank Transfer Instructions</div>
+                        </div>
+                        <div class="info-content">
+                            <ol>
+                                <li>Use the banking details below to make a transfer from your bank</li>
+                                <li>Use the exact reference number provided</li>
+                                <li>Transfers typically take 1-2 business days to reflect</li>
+                                <li>You'll receive a notification once funds are available</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Banking Details</label>
+                        <div class="bank-details">
+                            <div class="bank-detail-row">
+                                <div class="bank-detail-label">Bank Name</div>
+                                <div class="bank-detail-value">Standard Bank</div>
+                            </div>
+                            <div class="bank-detail-row">
+                                <div class="bank-detail-label">Account Number</div>
+                                <div class="bank-detail-value">0123456789</div>
+                                <button class="copy-btn" data-clipboard-text="0123456789">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <div class="bank-detail-row">
+                                <div class="bank-detail-label">Branch Code</div>
+                                <div class="bank-detail-value">051001</div>
+                                <button class="copy-btn" data-clipboard-text="051001">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <div class="bank-detail-row">
+                                <div class="bank-detail-label">Reference</div>
+                                <div class="bank-detail-value">TODA-7842-9516</div>
+                                <button class="copy-btn" data-clipboard-text="TODA-7842-9516">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <div class="bank-detail-row">
+                                <div class="bank-detail-label">Account Type</div>
+                                <div class="bank-detail-value">Current Account</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <div>
+                            <small class="text-muted">Transfers usually take 1-2 business days</small>
+                        </div>
+                        <button class="btn btn-primary" id="confirm-eft">I've Made the Transfer</button>
+                    </div>
+                </div>
+                
+                <!-- Payfast Form -->
+                <div class="funding-form-container" id="payfast-form" style="display: none;">
+                    <div class="form-header">
+                        <h2 class="form-title">Payfast Payment</h2>
+                        <p class="form-subtitle">Securely add funds using your credit/debit card or digital wallet</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="payfast-amount">Amount to Add</label>
+                        <div class="amount-input">
+                            <span class="currency-symbol">R</span>
+                            <input type="number" class="form-control" id="payfast-amount" placeholder="0.00" min="10" step="0.01">
+                        </div>
+                        <div class="amount-options">
+                            <div class="amount-option" data-amount="100">R 100</div>
+                            <div class="amount-option" data-amount="200">R 200</div>
+                            <div class="amount-option" data-amount="500">R 500</div>
+                            <div class="amount-option" data-amount="1000">R 1,000</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-box">
+                        <div class="info-box-header">
+                            <i class="fas fa-info-circle info-icon"></i>
+                            <div class="info-title">Payment Information</div>
+                        </div>
+                        <div class="info-content">
+                            <ul>
+                                <li>You will be redirected to Payfast's secure payment page</li>
+                                <li>Acceptable payment methods: Credit/Debit Cards, EFT, MobiKwik, and more</li>
+                                <li>Service fee: 2.9% of transaction amount</li>
+                                <li>Funds will be available immediately after successful payment</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="bank-details">
+                            <div class="bank-detail-row">
+                                <div class="bank-detail-label">Amount to Pay</div>
+                                <div class="bank-detail-value" id="payfast-total">R 0.00</div>
+                            </div>
+                            <div class="bank-detail-row">
+                                <div class="bank-detail-label">Service Fee (2.9%)</div>
+                                <div class="bank-detail-value" id="payfast-fee">R 0.00</div>
+                            </div>
+                            <div class="bank-detail-row">
+                                <div class="bank-detail-label">Total to Pay</div>
+                                <div class="bank-detail-value" id="payfast-grand-total">R 0.00</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <div>
+                            <small class="text-muted">By continuing, you agree to Payfast's Terms of Service</small>
+                        </div>
+                        <button class="btn btn-primary" id="proceed-payfast">Proceed to Payfast</button>
+                    </div>
+                </div>
+                
+                <!-- Success Screen -->
+                <div class="funding-form-container" id="success-screen" style="display: none;">
+                    <div class="success-checkmark">
+                        <div class="checkmark">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="success-message">
+                        <h2 id="success-title">Payment Successful!</h2>
+                        <p id="success-message">Your funds will be available immediately after we verify your deposit.</p>
+                        
+                        <div class="timeline">
+                            <div class="timeline-step completed">
+                                <div class="timeline-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h4>Payment Submitted</h4>
+                                    <p>Your payment details have been received</p>
+                                </div>
+                            </div>
+                            <div class="timeline-step active" id="verification-step">
+                                <div class="timeline-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h4>Verification</h4>
+                                    <p>We're verifying your payment</p>
+                                </div>
+                            </div>
+                            <div class="timeline-step" id="completion-step">
+                                <div class="timeline-icon">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h4>Funds Available</h4>
+                                    <p>Your card will be topped up</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <button class="btn btn-outline" id="new-topup">Make Another Top-Up</button>
+                        <button class="btn btn-primary" id="go-dashboard">Go to Dashboard</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const methodCards = document.querySelectorAll('.method-card');
+            const cashForm = document.getElementById('cash-form');
+            const eftForm = document.getElementById('eft-form');
+            const payfastForm = document.getElementById('payfast-form');
+            const successScreen = document.getElementById('success-screen');
+            
+            const amountInputs = document.querySelectorAll('input[type="number"]');
+            const amountOptions = document.querySelectorAll('.amount-option');
+            
+            // File Upload Elements
+            const popUploadArea = document.getElementById('pop-upload-area');
+            const popDocumentInput = document.getElementById('pop-document');
+            const popPreview = document.getElementById('pop-preview');
+            const popPreviewImage = popPreview.querySelector('.preview-image');
+            
+            // Success Screen Elements
+            const successTitle = document.getElementById('success-title');
+            const successMessage = document.getElementById('success-message');
+            const verificationStep = document.getElementById('verification-step');
+            const completionStep = document.getElementById('completion-step');
+            
+            // Payfast Calculation Elements
+            const payfastAmount = document.getElementById('payfast-amount');
+            const payfastTotal = document.getElementById('payfast-total');
+            const payfastFee = document.getElementById('payfast-fee');
+            const payfastGrandTotal = document.getElementById('payfast-grand-total');
+            
+            // Method Selection
+            methodCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    methodCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                    
+                    // Show corresponding form
+                    const method = this.getAttribute('data-method');
+                    
+                    cashForm.style.display = 'none';
+                    eftForm.style.display = 'none';
+                    payfastForm.style.display = 'none';
+                    successScreen.style.display = 'none';
+                    
+                    if (method === 'cash') {
+                        cashForm.style.display = 'block';
+                    } else if (method === 'eft') {
+                        eftForm.style.display = 'block';
+                    } else if (method === 'payfast') {
+                        payfastForm.style.display = 'block';
+                        calculatePayfastFee(); // Calculate initial fee
+                    }
+                });
+            });
+            
+            // Amount Options
+            amountOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options in the same container
+                    const parent = this.closest('.amount-options');
+                    parent.querySelectorAll('.amount-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    // Set the amount in the corresponding input
+                    const amount = this.getAttribute('data-amount');
+                    const input = this.closest('.funding-form-container').querySelector('input[type="number"]');
+                    input.value = amount;
+                    
+                    // If it's payfast, recalculate the fee
+                    if (this.closest('#payfast-form')) {
+                        calculatePayfastFee();
+                    }
+                });
+            });
+            
+            // Amount Input Change
+            amountInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // Remove selected class from amount options when user types
+                    const parent = this.closest('.form-group');
+                    const options = parent.querySelectorAll('.amount-option');
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // If it's payfast, recalculate the fee
+                    if (this.closest('#payfast-form')) {
+                        calculatePayfastFee();
+                    }
+                });
+            });
+            
+            // Payfast Fee Calculation
+            function calculatePayfastFee() {
+                const amount = parseFloat(payfastAmount.value) || 0;
+                const fee = amount * 0.029; // 2.9% fee
+                const total = amount + fee;
+                
+                payfastTotal.textContent = `R ${amount.toFixed(2)}`;
+                payfastFee.textContent = `R ${fee.toFixed(2)}`;
+                payfastGrandTotal.textContent = `R ${total.toFixed(2)}`;
+            }
+            
+            // File Upload Handling
+            function setupFileUpload(uploadArea, fileInput, previewContainer, previewImage) {
+                // Click on upload area triggers file input
+                uploadArea.addEventListener('click', function() {
+                    fileInput.click();
+                });
+                
+                // File input change event
+                fileInput.addEventListener('change', function(e) {
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(event) {
+                            previewImage.src = event.target.result;
+                            previewContainer.style.display = 'block';
+                            uploadArea.classList.add('active');
+                        };
+                        
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+                
+                // Retake button
+                const retakeBtn = previewContainer.querySelector('.btn-outline');
+                retakeBtn.addEventListener('click', function() {
+                    fileInput.value = '';
+                    previewContainer.style.display = 'none';
+                    uploadArea.classList.remove('active');
+                });
+                
+                // Confirm button
+                const confirmBtn = previewContainer.querySelector('.btn-primary');
+                confirmBtn.addEventListener('click', function() {
+                    // In a real app, this would upload the file to the server
+                    alert('Receipt uploaded successfully!');
+                    previewContainer.style.display = 'none';
+                    uploadArea.classList.remove('active');
+                    uploadArea.innerHTML = `
+                        <div class="upload-icon">
+                            <i class="fas fa-check-circle" style="color: var(--secondary);"></i>
+                        </div>
+                        <div class="upload-text">
+                            <h4>Upload Successful</h4>
+                            <p>Your receipt has been uploaded successfully</p>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Initialize file uploads
+            setupFileUpload(popUploadArea, popDocumentInput, popPreview, popPreviewImage);
+            
+            // Form Submission
+            document.getElementById('submit-cash').addEventListener('click', function() {
+                const amount = document.getElementById('amount').value;
+                
+                if (!amount || amount < 10) {
+                    alert('Please enter a valid amount (minimum R10)');
+                    return;
+                }
+                
+                // In a real app, this would submit the form to the server
+                showSuccessScreen('cash', amount);
+            });
+            
+            document.getElementById('confirm-eft').addEventListener('click', function() {
+                const amount = document.getElementById('eft-amount').value;
+                
+                if (!amount || amount < 10) {
+                    alert('Please enter a valid amount (minimum R10)');
+                    return;
+                }
+                
+                // In a real app, this would submit the form to the server
+                showSuccessScreen('eft', amount);
+            });
+            
+            document.getElementById('proceed-payfast').addEventListener('click', function() {
+                const amount = document.getElementById('payfast-amount').value;
+                
+                if (!amount || amount < 10) {
+                    alert('Please enter a valid amount (minimum R10)');
+                    return;
+                }
+                
+                // In a real app, this would redirect to Payfast
+                // For demo, we'll simulate successful payment
+                showSuccessScreen('payfast', amount);
+            });
+            
+            // Success Screen Navigation
+            document.getElementById('new-topup').addEventListener('click', function() {
+                successScreen.style.display = 'none';
+                cashForm.style.display = 'block';
+                
+                // Reset forms
+                document.querySelectorAll('input[type="number"]').forEach(input => {
+                    input.value = '';
+                });
+                
+                document.querySelectorAll('.amount-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                // Reset file upload areas
+                popUploadArea.innerHTML = `
+                    <div class="upload-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="upload-text">
+                        <h4>Upload Deposit Receipt</h4>
+                        <p>Take a clear photo of your deposit receipt</p>
+                    </div>
+                    <div class="upload-hint">Supported formats: JPG, PNG, PDF (Max 5MB)</div>
+                    <div class="btn-browse">Browse Files</div>
+                    <input type="file" id="pop-document" accept=".jpg,.jpeg,.png,.pdf" style="display: none;">
+                `;
+                
+                // Reinitialize file upload
+                const newPopDocument = document.getElementById('pop-document');
+                setupFileUpload(popUploadArea, newPopDocument, popPreview, popPreviewImage);
+            });
+            
+            document.getElementById('go-dashboard').addEventListener('click', function() {
+                alert('Redirecting to dashboard...');
+                // In a real app, this would redirect to the dashboard
+            });
+            
+            // Copy to Clipboard Functionality
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const text = this.getAttribute('data-clipboard-text');
+                    
+                    // Create a temporary textarea to copy from
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    
+                    // Show feedback
+                    const originalHTML = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i>';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalHTML;
+                    }, 2000);
+                });
+            });
+            
+            // Show Success Screen
+            function showSuccessScreen(method, amount) {
+                cashForm.style.display = 'none';
+                eftForm.style.display = 'none';
+                payfastForm.style.display = 'none';
+                successScreen.style.display = 'block';
+                
+                if (method === 'cash') {
+                    successTitle.textContent = 'Deposit Submitted!';
+                    successMessage.textContent = `We've received your R${amount} deposit request. Funds will be available immediately after verification.`;
+                    verificationStep.querySelector('p').textContent = 'We\'re verifying your deposit receipt';
+                    completionStep.querySelector('p').textContent = 'Your card will be topped up with R' + amount;
+                } else if (method === 'eft') {
+                    successTitle.textContent = 'Transfer Confirmed!';
+                    successMessage.textContent = `We've noted your R${amount} bank transfer. Funds will be available in 1-2 business days.`;
+                    verificationStep.querySelector('p').textContent = 'We\'re monitoring for your bank transfer';
+                    completionStep.querySelector('p').textContent = 'Your card will be topped up with R' + amount;
+                } else if (method === 'payfast') {
+                    successTitle.textContent = 'Payment Successful!';
+                    const totalAmount = (parseFloat(amount) + (parseFloat(amount) * 0.029)).toFixed(2);
+                    successMessage.textContent = `Your payment of R${totalAmount} was successful. Funds are available immediately.`;
+                    verificationStep.classList.add('completed');
+                    verificationStep.querySelector('.timeline-icon').innerHTML = '<i class="fas fa-check"></i>';
+                    verificationStep.querySelector('p').textContent = 'Payment verified successfully';
+                    completionStep.classList.add('active');
+                    completionStep.querySelector('p').textContent = 'Your card has been topped up with R' + amount;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

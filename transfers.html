@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODAPAY | Transfers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a4f8c;
+            --secondary: #00a859;
+            --accent: #ff6b00;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background-color: #f5f7f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(26, 79, 140, 0.05);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        
+        .nav-item i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+        
+        .user-details h4 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .user-details p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 16px 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .page-title p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .notification-icon {
+            position: relative;
+            font-size: 20px;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Content Area */
+        .content-area {
+            padding: 24px;
+            flex: 1;
+        }
+        
+        /* Transfer Tabs */
+        .transfer-tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .transfer-tab {
+            flex: 1;
+            padding: 12px 16px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .transfer-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Transfer Container */
+        .transfer-container {
+            display: flex;
+            gap: 24px;
+        }
+        
+        @media (max-width: 992px) {
+            .transfer-container {
+                flex-direction: column;
+            }
+        }
+        
+        /* Transfer Form */
+        .transfer-form-container {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+        
+        .form-header {
+            margin-bottom: 24px;
+        }
+        
+        .form-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .form-subtitle {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-control {
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 79, 140, 0.1);
+        }
+        
+        .amount-input {
+            position: relative;
+        }
+        
+        .currency-symbol {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: var(--gray);
+        }
+        
+        .amount-input .form-control {
+            padding-left: 40px;
+        }
+        
+        .amount-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .amount-option {
+            padding: 8px 16px;
+            background: var(--light);
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .amount-option:hover {
+            background: var(--light-gray);
+        }
+        
+        .amount-option.selected {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .recipient-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .recipient-option {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .recipient-option:hover {
+            border-color: var(--primary);
+        }
+        
+        .recipient-option.selected {
+            border-color: var(--primary);
+            background: rgba(26, 79, 140, 0.05);
+        }
+        
+        .recipient-option i {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .saved-contacts {
+            margin-top: 20px;
+        }
+        
+        .contact-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .contact-card {
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-card:hover {
+            border-color: var(--primary);
+        }
+        
+        .contact-card.selected {
+            border-color: var(--primary);
+            background: rgba(26, 79, 140, 0.05);
+        }
+        
+        .contact-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .contact-details {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .bank-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .bank-option {
+            padding: 12px 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .bank-option:hover {
+            border-color: var(--primary);
+        }
+        
+        .bank-option.selected {
+            border-color: var(--primary);
+            background: rgba(26, 79, 140, 0.05);
+        }
+        
+        .bank-logo {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .saved-beneficiaries {
+            margin-top: 20px;
+        }
+        
+        .beneficiary-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .beneficiary-card {
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .beneficiary-card:hover {
+            border-color: var(--primary);
+        }
+        
+        .beneficiary-card.selected {
+            border-color: var(--primary);
+            background: rgba(26, 79, 140, 0.05);
+        }
+        
+        .beneficiary-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .beneficiary-details {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+        
+        .beneficiary-account {
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .transfer-summary {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-label {
+            color: var(--gray);
+        }
+        
+        .summary-value {
+            font-weight: 500;
+        }
+        
+        .summary-total {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #153d6f;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .btn-outline:hover {
+            background: var(--light-gray);
+        }
+        
+        /* Recent Transfers */
+        .recent-transfers {
+            flex: 0 0 350px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .section-action {
+            color: var(--primary);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .transfer-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .transfer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .transfer-item:last-child {
+            border-bottom: none;
+        }
+        
+        .transfer-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            background: var(--light);
+            color: var(--primary);
+        }
+        
+        .transfer-details {
+            flex: 1;
+        }
+        
+        .transfer-recipient {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .transfer-date {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .transfer-amount {
+            font-weight: 600;
+        }
+        
+        .transfer-amount.sent {
+            color: var(--danger);
+        }
+        
+        .transfer-amount.received {
+            color: var(--secondary);
+        }
+        
+        /* Success Screen */
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .success-checkmark {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 40px;
+        }
+        
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+        }
+        
+        .success-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .success-message {
+            color: var(--gray);
+            margin-bottom: 30px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .transaction-details {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            color: var(--gray);
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .success-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .success-actions .btn {
+            margin-top: 0;
+            width: auto;
+            flex: 1;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .sidebar-nav {
+                display: flex;
+                overflow-x: auto;
+                padding: 0;
+            }
+            
+            .nav-item {
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+            }
+            
+            .nav-item:hover, .nav-item.active {
+                border-left: none;
+                border-bottom-color: var(--primary);
+            }
+            
+            .recent-transfers {
+                flex: 1;
+                max-height: none;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .content-area {
+                padding: 16px;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .top-bar-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .contact-list, .beneficiary-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .success-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-credit-card"></i>
+                    TODAPAY
+                </div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    My Cards
+                </a>
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-exchange-alt"></i>
+                    Transfers
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-wallet"></i>
+                    Top-Up
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    Transactions
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-file-invoice"></i>
+                    Statements
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-bell"></i>
+                    Notifications
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">NM</div>
+                    <div class="user-details">
+                        <h4>Nkosinathi Mathela</h4>
+                        <p>Premium Member</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="page-title">
+                    <h1>Money Transfers</h1>
+                    <p>Send money to TODAPAY cards or other bank accounts</p>
+                </div>
+                
+                <div class="top-bar-actions">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="user-avatar">NM</div>
+                </div>
+            </div>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Transfer Tabs -->
+                <div class="transfer-tabs">
+                    <div class="transfer-tab active" data-tab="internal">Internal Transfer</div>
+                    <div class="transfer-tab" data-tab="external">External Transfer</div>
+                </div>
+                
+                <div class="transfer-container">
+                    <!-- Transfer Form -->
+                    <div class="transfer-form-container">
+                        <!-- Internal Transfer Form -->
+                        <div id="internal-form">
+                            <div class="form-header">
+                                <h2 class="form-title">Send to TODAPAY Card</h2>
+                                <p class="form-subtitle">Transfer instantly to another TODAPAY cardholder</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="internal-amount">Amount to Send</label>
+                                <div class="amount-input">
+                                    <span class="currency-symbol">R</span>
+                                    <input type="number" class="form-control" id="internal-amount" placeholder="0.00" min="1" step="0.01">
+                                </div>
+                                <div class="amount-options">
+                                    <div class="amount-option" data-amount="50">R 50</div>
+                                    <div class="amount-option" data-amount="100">R 100</div>
+                                    <div class="amount-option" data-amount="200">R 200</div>
+                                    <div class="amount-option" data-amount="500">R 500</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Select Recipient</label>
+                                
+                                <div class="recipient-selector">
+                                    <div class="recipient-option selected" data-type="saved">
+                                        <i class="fas fa-user-friends"></i>
+                                        <div>Saved Contacts</div>
+                                    </div>
+                                    <div class="recipient-option" data-type="new">
+                                        <i class="fas fa-plus-circle"></i>
+                                        <div>New Contact</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Saved Contacts -->
+                                <div class="saved-contacts" id="saved-contacts">
+                                    <div class="contact-list">
+                                        <div class="contact-card selected">
+                                            <div class="contact-name">Sarah Johnson</div>
+                                            <div class="contact-details">•••• 7842</div>
+                                        </div>
+                                        <div class="contact-card">
+                                            <div class="contact-name">Michael Bhengu</div>
+                                            <div class="contact-details">•••• 4519</div>
+                                        </div>
+                                        <div class="contact-card">
+                                            <div class="contact-name">David Williams</div>
+                                            <div class="contact-details">•••• 3267</div>
+                                        </div>
+                                        <div class="contact-card">
+                                            <div class="contact-name">Lisa van der Merwe</div>
+                                            <div class="contact-details">•••• 9183</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- New Contact Form -->
+                                <div class="new-contact" id="new-contact" style="display: none;">
+                                    <div class="form-group">
+                                        <label class="form-label" for="card-number">Card Number</label>
+                                        <input type="text" class="form-control" id="card-number" placeholder="Enter 16-digit card number">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="recipient-name">Recipient Name</label>
+                                        <input type="text" class="form-control" id="recipient-name" placeholder="Enter recipient's full name">
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="save-contact">
+                                        <label class="form-check-label" for="save-contact">
+                                            Save this contact for future transfers
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="internal-reference">Reference (Optional)</label>
+                                <input type="text" class="form-control" id="internal-reference" placeholder="e.g., Lunch money">
+                            </div>
+                            
+                            <div class="transfer-summary">
+                                <div class="summary-row">
+                                    <div class="summary-label">Transfer Amount</div>
+                                    <div class="summary-value" id="internal-summary-amount">R 0.00</div>
+                                </div>
+                                <div class="summary-row">
+                                    <div class="summary-label">Fee</div>
+                                    <div class="summary-value">R 0.00</div>
+                                </div>
+                                <div class="summary-row">
+                                    <div class="summary-label">Total</div>
+                                    <div class="summary-value summary-total" id="internal-total">R 0.00</div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary" id="send-internal">Send Money</button>
+                        </div>
+                        
+                        <!-- External Transfer Form -->
+                        <div id="external-form" style="display: none;">
+                            <div class="form-header">
+                                <h2 class="form-title">Send to Bank Account</h2>
+                                <p class="form-subtitle">Transfer to any South African bank account</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="external-amount">Amount to Send</label>
+                                <div class="amount-input">
+                                    <span class="currency-symbol">R</span>
+                                    <input type="number" class="form-control" id="external-amount" placeholder="0.00" min="1" step="0.01">
+                                </div>
+                                <div class="amount-options">
+                                    <div class="amount-option" data-amount="100">R 100</div>
+                                    <div class="amount-option" data-amount="500">R 500</div>
+                                    <div class="amount-option" data-amount="1000">R 1,000</div>
+                                    <div class="amount-option" data-amount="2000">R 2,000</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Select Bank</label>
+                                
+                                <div class="bank-selector">
+                                    <div class="bank-option selected">
+                                        <div class="bank-logo">SB</div>
+                                        <div>Standard Bank</div>
+                                    </div>
+                                    <div class="bank-option">
+                                        <div class="bank-logo">FNB</div>
+                                        <div>First National Bank</div>
+                                    </div>
+                                    <div class="bank-option">
+                                        <div class="bank-logo">ABSA</div>
+                                        <div>Absa Bank</div>
+                                    </div>
+                                    <div class="bank-option">
+                                        <div class="bank-logo">NED</div>
+                                        <div>Nedbank</div>
+                                    </div>
+                                    <div class="bank-option">
+                                        <div class="bank-logo">CPT</div>
+                                        <div>Capitec Bank</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Select Recipient</label>
+                                
+                                <div class="recipient-selector">
+                                    <div class="recipient-option selected" data-type="saved-beneficiary">
+                                        <i class="fas fa-user-friends"></i>
+                                        <div>Saved Beneficiaries</div>
+                                    </div>
+                                    <div class="recipient-option" data-type="new-beneficiary">
+                                        <i class="fas fa-plus-circle"></i>
+                                        <div>New Beneficiary</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Saved Beneficiaries -->
+                                <div class="saved-beneficiaries" id="saved-beneficiaries">
+                                    <div class="beneficiary-list">
+                                        <div class="beneficiary-card selected">
+                                            <div class="beneficiary-name">Thabo Mbeki</div>
+                                            <div class="beneficiary-details">Standard Bank • Savings</div>
+                                            <div class="beneficiary-account">•••• 7842</div>
+                                        </div>
+                                        <div class="beneficiary-card">
+                                            <div class="beneficiary-name">Nomzamo Zulu</div>
+                                            <div class="beneficiary-details">FNB • Current</div>
+                                            <div class="beneficiary-account">•••• 4519</div>
+                                        </div>
+                                        <div class="beneficiary-card">
+                                            <div class="beneficiary-name">James Peterson</div>
+                                            <div class="beneficiary-details">Absa • Savings</div>
+                                            <div class="beneficiary-account">•••• 3267</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- New Beneficiary Form -->
+                                <div class="new-beneficiary" id="new-beneficiary" style="display: none;">
+                                    <div class="form-group">
+                                        <label class="form-label" for="account-holder">Account Holder Name</label>
+                                        <input type="text" class="form-control" id="account-holder" placeholder="Enter account holder's full name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="account-number">Account Number</label>
+                                        <input type="text" class="form-control" id="account-number" placeholder="Enter account number">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="account-type">Account Type</label>
+                                        <select class="form-control" id="account-type">
+                                            <option value="">Select account type</option>
+                                            <option value="savings">Savings Account</option>
+                                            <option value="current">Current Account</option>
+                                            <option value="transmission">Transmission Account</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="branch-code">Branch Code</label>
+                                        <input type="text" class="form-control" id="branch-code" placeholder="Enter branch code">
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="save-beneficiary">
+                                        <label class="form-check-label" for="save-beneficiary">
+                                            Save this beneficiary for future transfers
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="external-reference">Reference (Optional)</label>
+                                <input type="text" class="form-control" id="external-reference" placeholder="e.g., Rent payment">
+                            </div>
+                            
+                            <div class="transfer-summary">
+                                <div class="summary-row">
+                                    <div class="summary-label">Transfer Amount</div>
+                                    <div class="summary-value" id="external-summary-amount">R 0.00</div>
+                                </div>
+                                <div class="summary-row">
+                                    <div class="summary-label">Fee</div>
+                                    <div class="summary-value">R 5.00</div>
+                                </div>
+                                <div class="summary-row">
+                                    <div class="summary-label">Total</div>
+                                    <div class="summary-value summary-total" id="external-total">R 5.00</div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary" id="send-external">Send Money</button>
+                        </div>
+                        
+                        <!-- Success Screen -->
+                        <div class="success-screen" id="success-screen">
+                            <div class="success-checkmark">
+                                <div class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            
+                            <h2 class="success-title" id="success-title">Transfer Successful!</h2>
+                            <p class="success-message" id="success-message">Your money has been sent successfully. The recipient should receive it shortly.</p>
+                            
+                            <div class="transaction-details">
+                                <div class="detail-row">
+                                    <div class="detail-label">Transaction ID</div>
+                                    <div class="detail-value">TXN-7842-9516</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Amount</div>
+                                    <div class="detail-value" id="success-amount">R 0.00</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Recipient</div>
+                                    <div class="detail-value" id="success-recipient">-</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Date & Time</div>
+                                    <div class="detail-value" id="success-date">-</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Reference</div>
+                                    <div class="detail-value" id="success-reference">-</div>
+                                </div>
+                            </div>
+                            
+                            <div class="success-actions">
+                                <button class="btn btn-outline" id="new-transfer">New Transfer</button>
+                                <button class="btn btn-primary" id="view-receipt">View Receipt</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Transfers -->
+                    <div class="recent-transfers">
+                        <div class="section-header">
+                            <h3 class="section-title">Recent Transfers</h3>
+                            <a href="#" class="section-action">View All</a>
+                        </div>
+                        
+                        <ul class="transfer-list">
+                            <li class="transfer-item">
+                                <div class="transfer-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="transfer-details">
+                                    <div class="transfer-recipient">Sarah Johnson</div>
+                                    <div class="transfer-date">25 Aug 2023 • 14:23</div>
+                                </div>
+                                <div class="transfer-amount sent">-R 200.00</div>
+                            </li>
+                            <li class="transfer-item">
+                                <div class="transfer-icon">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <div class="transfer-details">
+                                    <div class="transfer-recipient">Thabo Mbeki</div>
+                                    <div class="transfer-date">24 Aug 2023 • 10:15</div>
+                                </div>
+                                <div class="transfer-amount sent">-R 1,500.00</div>
+                            </li>
+                            <li class="transfer-item">
+                                <div class="transfer-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="transfer-details">
+                                    <div class="transfer-recipient">Michael Bhengu</div>
+                                    <div class="transfer-date">23 Aug 2023 • 16:42</div>
+                                </div>
+                                <div class="transfer-amount received">+R 350.00</div>
+                            </li>
+                            <li class="transfer-item">
+                                <div class="transfer-icon">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <div class="transfer-details">
+                                    <div class="transfer-recipient">Nomzamo Zulu</div>
+                                    <div class="transfer-date">22 Aug 2023 • 09:30</div>
+                                </div>
+                                <div class="transfer-amount sent">-R 800.00</div>
+                            </li>
+                            <li class="transfer-item">
+                                <div class="transfer-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="transfer-details">
+                                    <div class="transfer-recipient">David Williams</div>
+                                    <div class="transfer-date">20 Aug 2023 • 11:05</div>
+                                </div>
+                                <div class="transfer-amount sent">-R 100.00</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const transferTabs = document.querySelectorAll('.transfer-tab');
+            const internalForm = document.getElementById('internal-form');
+            const externalForm = document.getElementById('external-form');
+            const successScreen = document.getElementById('success-screen');
+            
+            const internalAmount = document.getElementById('internal-amount');
+            const externalAmount = document.getElementById('external-amount');
+            const amountOptions = document.querySelectorAll('.amount-option');
+            
+            const recipientOptions = document.querySelectorAll('.recipient-option');
+            const savedContacts = document.getElementById('saved-contacts');
+            const newContact = document.getElementById('new-contact');
+            
+            const beneficiaryOptions = document.querySelectorAll('.recipient-option[data-type^="saved"], .recipient-option[data-type^="new"]');
+            const savedBeneficiaries = document.getElementById('saved-beneficiaries');
+            const newBeneficiary = document.getElementById('new-beneficiary');
+            
+            const contactCards = document.querySelectorAll('.contact-card');
+            const beneficiaryCards = document.querySelectorAll('.beneficiary-card');
+            const bankOptions = document.querySelectorAll('.bank-option');
+            
+            const internalSummaryAmount = document.getElementById('internal-summary-amount');
+            const internalTotal = document.getElementById('internal-total');
+            const externalSummaryAmount = document.getElementById('external-summary-amount');
+            const externalTotal = document.getElementById('external-total');
+            
+            const sendInternalBtn = document.getElementById('send-internal');
+            const sendExternalBtn = document.getElementById('send-external');
+            
+            const successTitle = document.getElementById('success-title');
+            const successMessage = document.getElementById('success-message');
+            const successAmount = document.getElementById('success-amount');
+            const successRecipient = document.getElementById('success-recipient');
+            const successDate = document.getElementById('success-date');
+            const successReference = document.getElementById('success-reference');
+            
+            const newTransferBtn = document.getElementById('new-transfer');
+            const viewReceiptBtn = document.getElementById('view-receipt');
+            
+            // Tab Switching
+            transferTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    transferTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Show corresponding form
+                    const tabType = this.getAttribute('data-tab');
+                    
+                    internalForm.style.display = 'none';
+                    externalForm.style.display = 'none';
+                    successScreen.style.display = 'none';
+                    
+                    if (tabType === 'internal') {
+                        internalForm.style.display = 'block';
+                    } else if (tabType === 'external') {
+                        externalForm.style.display = 'block';
+                        updateExternalSummary(); // Update summary with fee
+                    }
+                });
+            });
+            
+            // Amount Options
+            amountOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options in the same container
+                    const parent = this.closest('.amount-options');
+                    if (parent) {
+                        parent.querySelectorAll('.amount-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                    }
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    // Set the amount in the corresponding input
+                    const amount = this.getAttribute('data-amount');
+                    const input = this.closest('.transfer-form-container').querySelector('input[type="number"]');
+                    if (input) {
+                        input.value = amount;
+                        
+                        // Update summary
+                        if (input.id === 'internal-amount') {
+                            updateInternalSummary();
+                        } else if (input.id === 'external-amount') {
+                            updateExternalSummary();
+                        }
+                    }
+                });
+            });
+            
+            // Amount Input Change
+            internalAmount.addEventListener('input', updateInternalSummary);
+            externalAmount.addEventListener('input', updateExternalSummary);
+            
+            // Recipient Type Selection (Internal)
+            recipientOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    recipientOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    const type = this.getAttribute('data-type');
+                    
+                    if (type === 'saved') {
+                        savedContacts.style.display = 'block';
+                        newContact.style.display = 'none';
+                    } else if (type === 'new') {
+                        savedContacts.style.display = 'none';
+                        newContact.style.display = 'block';
+                    }
+                });
+            });
+            
+            // Beneficiary Type Selection (External)
+            beneficiaryOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options in the same container
+                    const parent = this.closest('.recipient-selector');
+                    parent.querySelectorAll('.recipient-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    const type = this.getAttribute('data-type');
+                    
+                    if (type === 'saved-beneficiary') {
+                        savedBeneficiaries.style.display = 'block';
+                        newBeneficiary.style.display = 'none';
+                    } else if (type === 'new-beneficiary') {
+                        savedBeneficiaries.style.display = 'none';
+                        newBeneficiary.style.display = 'block';
+                    }
+                });
+            });
+            
+            // Contact Selection
+            contactCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    contactCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Beneficiary Selection
+            beneficiaryCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    beneficiaryCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Bank Selection
+            bankOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    bankOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Update Internal Transfer Summary
+            function updateInternalSummary() {
+                const amount = parseFloat(internalAmount.value) || 0;
+                internalSummaryAmount.textContent = `R ${amount.toFixed(2)}`;
+                internalTotal.textContent = `R ${amount.toFixed(2)}`;
+            }
+            
+            // Update External Transfer Summary
+            function updateExternalSummary() {
+                const amount = parseFloat(externalAmount.value) || 0;
+                const fee = 5.00;
+                const total = amount + fee;
+                
+                externalSummaryAmount.textContent = `R ${amount.toFixed(2)}`;
+                externalTotal.textContent = `R ${total.toFixed(2)}`;
+            }
+            
+            // Form Submission
+            sendInternalBtn.addEventListener('click', function() {
+                const amount = parseFloat(internalAmount.value) || 0;
+                
+                if (amount <= 0) {
+                    alert('Please enter a valid amount');
+                    return;
+                }
+                
+                // Get selected contact
+                let recipient = 'New Contact';
+                const selectedContact = document.querySelector('.contact-card.selected');
+                if (selectedContact) {
+                    recipient = selectedContact.querySelector('.contact-name').textContent;
+                } else {
+                    const recipientName = document.getElementById('recipient-name').value;
+                    if (recipientName) {
+                        recipient = recipientName;
+                    }
+                }
+                
+                const reference = document.getElementById('internal-reference').value || 'No reference';
+                
+                // Show success screen
+                showSuccessScreen('internal', amount, recipient, reference);
+            });
+            
+            sendExternalBtn.addEventListener('click', function() {
+                const amount = parseFloat(externalAmount.value) || 0;
+                
+                if (amount <= 0) {
+                    alert('Please enter a valid amount');
+                    return;
+                }
+                
+                // Get selected beneficiary
+                let recipient = 'New Beneficiary';
+                const selectedBeneficiary = document.querySelector('.beneficiary-card.selected');
+                if (selectedBeneficiary) {
+                    recipient = selectedBeneficiary.querySelector('.beneficiary-name').textContent;
+                } else {
+                    const accountHolder = document.getElementById('account-holder').value;
+                    if (accountHolder) {
+                        recipient = accountHolder;
+                    }
+                }
+                
+                const reference = document.getElementById('external-reference').value || 'No reference';
+                
+                // Show success screen
+                showSuccessScreen('external', amount, recipient, reference);
+            });
+            
+            // Success Screen Navigation
+            newTransferBtn.addEventListener('click', function() {
+                successScreen.style.display = 'none';
+                internalForm.style.display = 'block';
+                
+                // Reset forms
+                document.querySelectorAll('input').forEach(input => {
+                    if (input.type !== 'checkbox') {
+                        input.value = '';
+                    }
+                });
+                
+                document.querySelectorAll('.amount-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                // Reset to default tab
+                transferTabs.forEach(tab => tab.classList.remove('active'));
+                document.querySelector('.transfer-tab[data-tab="internal"]').classList.add('active');
+                
+                // Reset summaries
+                updateInternalSummary();
+            });
+            
+            viewReceiptBtn.addEventListener('click', function() {
+                alert('Receipt would be generated and downloaded in a real application');
+                // In a real app, this would generate a PDF receipt
+            });
+            
+            // Show Success Screen
+            function showSuccessScreen(type, amount, recipient, reference) {
+                internalForm.style.display = 'none';
+                externalForm.style.display = 'none';
+                successScreen.style.display = 'block';
+                
+                // Set current date
+                const now = new Date();
+                const formattedDate = now.toLocaleDateString('en-ZA', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }) + ' • ' + now.toLocaleTimeString('en-ZA', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                if (type === 'internal') {
+                    successTitle.textContent = 'Transfer Sent!';
+                    successMessage.textContent = 'Your money has been sent successfully. The recipient should receive it instantly.';
+                } else if (type === 'external') {
+                    successTitle.textContent = 'Transfer Processing!';
+                    successMessage.textContent = 'Your bank transfer has been submitted. It will take 1-2 business days to complete.';
+                }
+                
+                successAmount.textContent = `R ${amount.toFixed(2)}`;
+                successRecipient.textContent = recipient;
+                successDate.textContent = formattedDate;
+                successReference.textContent = reference;
+            }
+            
+            // Initialize summaries
+            updateInternalSummary();
+            updateExternalSummary();
+        });
+    </script>
+</body>
+</html>
