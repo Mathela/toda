@@ -764,7 +764,7 @@
             }
             
             function validateIndividualForm() {
-                const required = ['first-name', 'last-name', 'id-number', 'dob', 'address', 'email', 'cellphone'];
+                const required = ['first-name', 'last-name', 'id-number', 'dob', 'address', 'cellphone'];
                 return required.every(id => {
                     const element = document.getElementById(id);
                     return element && element.value.trim() !== '';
